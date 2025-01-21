@@ -37,7 +37,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
             NavigationDestination(icon: Icon(Icons.refresh), label: 'Progress'),
             NavigationDestination(icon: Icon(Icons.done), label: 'Completed'),
             NavigationDestination(
-                icon: Icon(Icons.cancel_outlined), label: 'Canceled'),
+                icon: Icon(Icons.cancel_outlined), label: 'Cancelled'),
           ]),
     );
   }

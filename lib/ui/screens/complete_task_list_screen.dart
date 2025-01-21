@@ -33,7 +33,7 @@ class _CompleteTaskLIstScreenState extends State<CompleteTaskLIstScreen> {
         primary: false,
         itemCount: 10,
         itemBuilder: (context, index) {
-          return  const TaskItemWidget(color: Colors.green, text: 'Complete',);
+          // return  const TaskItemWidget();
         });
   }
 }

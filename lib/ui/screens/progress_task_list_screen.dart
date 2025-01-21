@@ -33,7 +33,7 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
         primary: false,
         itemCount: 10,
         itemBuilder: (context, index) {
-          return  const TaskItemWidget(color: Colors.purple, text: 'Progress',);
+          // return  TaskItemWidget();
         });
   }
 }

@@ -13,18 +13,14 @@ import 'package:task_manager_ostad/ui/utills/app_colors.dart';
 class TaskManager extends StatelessWidget {
   const TaskManager({super.key});
 
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
+      navigatorKey: navigatorKey,
       theme: ThemeData(
-          chipTheme:  const ChipThemeData(
-            labelStyle: TextStyle(color: Colors.white),
-            side: BorderSide.none,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16))),
-          ),
           colorSchemeSeed: AppColor.themeColor,
           textTheme: const TextTheme(
             titleLarge: TextStyle(

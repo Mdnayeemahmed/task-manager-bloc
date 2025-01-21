@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
+import 'package:task_manager_ostad/app.dart';
+import 'package:task_manager_ostad/ui/controllers/auth_controller.dart';
+import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 
 class NetworkResponse {
   final int statusCode;
@@ -22,7 +25,8 @@ class NetworkCaller {
       {required String url, Map<String, dynamic>? params}) async {
     try {
       Uri uri = Uri.parse(url);
-      Response response = await get(uri);
+      Response response =
+          await get(uri, headers: {'token': AuthController.accessToken ?? ''});
       debugPrint('URL => $url');
       debugPrint('Response Code => ${response.statusCode}');
       debugPrint('Response Data => ${response.body}');
@@ -33,6 +37,10 @@ class NetworkCaller {
           statusCode: response.statusCode,
           responseData: decodedResponse,
         );
+      } else if (response.statusCode == 401) {
+        await _logout();
+        return NetworkResponse(
+            isSuccess: false, statusCode: response.statusCode);
       } else {
         return NetworkResponse(
             isSuccess: false, statusCode: response.statusCode);
@@ -48,7 +56,10 @@ class NetworkCaller {
     try {
       Uri uri = Uri.parse(url);
       Response response = await post(uri,
-          headers: {'content-type': 'application/json'},
+          headers: {
+            'content-type': 'application/json',
+            'token': AuthController.accessToken ?? ''
+          },
           body: jsonEncode(body));
       debugPrint('URL => $url');
       debugPrint('Response Code => ${response.statusCode}');
@@ -60,6 +71,10 @@ class NetworkCaller {
           statusCode: response.statusCode,
           responseData: decodedResponse,
         );
+      } else if (response.statusCode == 401) {
+        await _logout();
+        return NetworkResponse(
+            isSuccess: false, statusCode: response.statusCode);
       } else {
         return NetworkResponse(
             isSuccess: false, statusCode: response.statusCode);
@@ -68,5 +83,11 @@ class NetworkCaller {
       return NetworkResponse(
           isSuccess: false, statusCode: -1, errorMessage: e.toString());
     }
+  }
+
+  static Future<void> _logout() async {
+    await AuthController.clearUserData();
+    Navigator.pushNamedAndRemoveUntil(TaskManager.navigatorKey.currentContext!,
+        SignInScreen.name, (predicate) => false);
   }
 }

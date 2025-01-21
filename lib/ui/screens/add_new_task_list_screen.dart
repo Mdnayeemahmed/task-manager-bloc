@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_ostad/data/service/network_caller.dart';
+import 'package:task_manager_ostad/data/utills/urls.dart';
+import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
+import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
 import 'package:task_manager_ostad/ui/widgets/tm_app_bar.dart';
 
 class AddNewTaskListScreen extends StatefulWidget {
@@ -14,6 +18,7 @@ class _AddNewTaskListScreenState extends State<AddNewTaskListScreen> {
   final TextEditingController _descriptionTEController =
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _createNewTaskInProgress = false;
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -44,6 +49,12 @@ class _AddNewTaskListScreenState extends State<AddNewTaskListScreen> {
                       hintText: 'Title',
                       hintStyle: textTheme.titleSmall,
                     ),
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your title here';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -53,13 +64,27 @@ class _AddNewTaskListScreenState extends State<AddNewTaskListScreen> {
                       hintText: 'Description',
                       hintStyle: textTheme.titleSmall,
                     ),
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your description here';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 24,
                   ),
-                  ElevatedButton(
-                      onPressed: () {},
-                      child: const Icon(Icons.arrow_circle_right_outlined))
+                  Visibility(
+                    visible: _createNewTaskInProgress==false,
+                    replacement: const CenterCircularProgressIndicator(),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _createNewTask();
+                          }
+                        },
+                        child: const Icon(Icons.arrow_circle_right_outlined)),
+                  )
                 ],
               ),
             ),
@@ -67,6 +92,33 @@ class _AddNewTaskListScreenState extends State<AddNewTaskListScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _createNewTask() async {
+    _createNewTaskInProgress = true;
+    setState(() {});
+
+    Map<String, dynamic> requestBody = {
+      "title": _titleTEController.text.trim(),
+      "description": _descriptionTEController.text.trim(),
+      "status": "New",
+    };
+
+    final NetworkResponse response = await NetworkCaller.postRequest(
+        url: Urls.createTaskUrl, body: requestBody);
+    _createNewTaskInProgress=false;
+    setState(() {});
+    if(response.isSuccess){
+      _clearTextField();
+      showSnackBarMessage(context, 'New task added!');
+    }else{
+      showSnackBarMessage(context, response.errorMessage);
+    }
+  }
+
+  void _clearTextField(){
+    _titleTEController.clear();
+    _descriptionTEController.clear();
   }
 
   @override
