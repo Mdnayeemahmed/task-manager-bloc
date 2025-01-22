@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 import 'package:task_manager_ostad/ui/screens/update_profile_screen.dart';
@@ -23,8 +25,11 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.pushNamed(context, UpdateProfileScreen.name);
               }
             },
-            child: const CircleAvatar(
+            child: CircleAvatar(
               radius: 20,
+              backgroundImage: MemoryImage(
+                  base64Decode(AuthController.userModel?.photo ?? '')),
+              onBackgroundImageError: (_, __) => const Icon(Icons.person),
             ),
           ),
           const SizedBox(
