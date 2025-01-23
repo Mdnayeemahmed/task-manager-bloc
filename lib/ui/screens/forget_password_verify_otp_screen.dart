@@ -1,10 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:task_manager_ostad/data/service/network_caller.dart';
+import 'package:task_manager_ostad/data/utills/urls.dart';
 import 'package:task_manager_ostad/ui/screens/reset_password_screen.dart';
 import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 import 'package:task_manager_ostad/ui/utills/app_colors.dart';
 import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
+import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
 
 class ForgetPasswordVerifyOtpScreen extends StatefulWidget {
   const ForgetPasswordVerifyOtpScreen({super.key});
@@ -18,7 +21,8 @@ class ForgetPasswordVerifyOtpScreen extends StatefulWidget {
 class _ForgetPasswordVerifyOtpScreenState
     extends State<ForgetPasswordVerifyOtpScreen> {
   final TextEditingController _otpTEController = TextEditingController();
-  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _otpVerifyInProgress=false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,7 @@ class _ForgetPasswordVerifyOtpScreenState
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Form(
-              key: _globalKey,
+              key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -71,6 +75,26 @@ class _ForgetPasswordVerifyOtpScreenState
       ),
     );
   }
+
+  // void _onTapOtpVerifyButton(){
+  //   if(_formKey.currentState!.validate()){
+  //     _otpVerify();
+  //   }
+  // }
+  //
+  // Future<void> _otpVerify()async{
+  //   _otpVerifyInProgress=true;
+  //   final NetworkResponse response =await NetworkCaller.getRequest(url: Urls. (widge.email.toStringz(), _otpTEController.text));
+  //   debugPrint(response.isSuccess as String?);
+  //   debugPrint(response.statusCode as String?);
+  //   if(response.responseData?['status']!='fail'){
+  //     Navigator.pushNamed(context, ResetPasswordScreen.name);
+  //   } else{
+  //     showSnackBarMessage(context, response.errorMessage);
+  //   }
+  //   _otpVerifyInProgress=false;
+  //   setState(() {});
+  // }
 
   Widget _buildPinCodeTextField() {
     return PinCodeTextField(

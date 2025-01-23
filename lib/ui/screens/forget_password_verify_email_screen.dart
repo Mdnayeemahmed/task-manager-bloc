@@ -1,8 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager_ostad/data/service/network_caller.dart';
+import 'package:task_manager_ostad/data/utills/urls.dart';
 import 'package:task_manager_ostad/ui/screens/forget_password_verify_otp_screen.dart';
 import 'package:task_manager_ostad/ui/utills/app_colors.dart';
 import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
+import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
 
 class ForgetPasswordVerifyEmailScreen extends StatefulWidget {
   const ForgetPasswordVerifyEmailScreen({super.key});
@@ -16,7 +19,8 @@ class ForgetPasswordVerifyEmailScreen extends StatefulWidget {
 class _ForgetPasswordVerifyEmailScreenState
     extends State<ForgetPasswordVerifyEmailScreen> {
   final TextEditingController _emailTEController = TextEditingController();
-  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _emailVerifyInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,7 @@ class _ForgetPasswordVerifyEmailScreenState
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Form(
-              key: _globalKey,
+              key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -41,7 +45,7 @@ class _ForgetPasswordVerifyEmailScreenState
                   const SizedBox(
                     height: 8,
                   ),
-                   Text(
+                  Text(
                     'A 6 digits verification OTP will be sent to your email address',
                     style: textTheme.titleSmall,
                   ),
@@ -54,13 +58,20 @@ class _ForgetPasswordVerifyEmailScreenState
                     decoration: const InputDecoration(
                       hintText: 'Email',
                     ),
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your valid email address';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, ForgetPasswordVerifyOtpScreen.name);
+                      Navigator.pushNamed(
+                          context, ForgetPasswordVerifyOtpScreen.name);
                     },
                     child: const Icon(Icons.arrow_circle_right_outlined),
                   ),
@@ -78,6 +89,28 @@ class _ForgetPasswordVerifyEmailScreenState
       ),
     );
   }
+
+  // void _onTapEmailVerifyButton(){
+  //   if(_formKey.currentState!.validate()){
+  //    _emailVerify();
+  //   }
+  // }
+  //
+  // Future<void> _emailVerify()async{
+  //   _emailVerifyInProgress=true;
+  //   final NetworkResponse response = await NetworkCaller.getRequest(url: Urls. (_emailTEController.text));
+  //
+  //   if(response.isSuccess){
+  //     _emailTEController.text;
+  //     showSnackBarMessage(context, '');
+  //     Navigator.pushNamed(context, ForgetPasswordVerifyOtpScreen.name);
+  //   } else{
+  //     showSnackBarMessage(context, response.errorMessage);
+  //   }
+  // _emailVerifyInProgress=false;
+  //   setState(() {});
+  //
+  // }
 
   Widget _buildSignUp() {
     return RichText(

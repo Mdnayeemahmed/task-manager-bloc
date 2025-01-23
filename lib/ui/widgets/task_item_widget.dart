@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_ostad/data/models/task_model.dart';
+import 'package:task_manager_ostad/data/models/task_list_model.dart';
+import 'package:task_manager_ostad/data/service/network_caller.dart';
+import 'package:task_manager_ostad/data/utills/urls.dart';
+import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
+import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
 
-class TaskItemWidget extends StatelessWidget {
+class TaskItemWidget extends StatefulWidget {
   const TaskItemWidget({
     super.key,
     required this.taskModel,
   });
-  final TaskModel taskModel;
+  final TaskListModel taskModel;
 
+  @override
+  State<TaskItemWidget> createState() => _TaskItemWidgetState();
+}
+
+class _TaskItemWidgetState extends State<TaskItemWidget> {
+  bool _deleteTaskItemInProgress = false;
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -17,24 +27,26 @@ class TaskItemWidget extends StatelessWidget {
       elevation: 0,
       child: ListTile(
         title: Text(
-          taskModel.title ?? '',
+          widget.taskModel.title ?? '',
           style: textTheme.titleMedium,
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(taskModel.description ?? '', style: textTheme.titleSmall),
-            Text('Date: ${taskModel.createdDate ?? ''}',
+            Text(widget.taskModel.description ?? '',
+                style: textTheme.titleSmall),
+            Text('Date: ${widget.taskModel.createdDate ?? ''}',
                 style: textTheme.titleSmall),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Chip(
                   label: Text(
-                    taskModel.status ?? 'New',
+                    widget.taskModel.status ?? 'New',
                     style: const TextStyle(color: Colors.white),
                   ),
-                  backgroundColor: _getStatusColor(taskModel.status ?? 'New'),
+                  backgroundColor:
+                      _getStatusColor(widget.taskModel.status ?? 'New'),
                   side: BorderSide.none,
                 ),
                 Row(
@@ -45,12 +57,19 @@ class TaskItemWidget extends StatelessWidget {
                           Icons.edit,
                           color: Colors.cyan,
                         )),
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                        )),
+                    Visibility(
+                      visible: _deleteTaskItemInProgress == false,
+                      replacement: const CenterCircularProgressIndicator(),
+                      child: IconButton(
+                          onPressed: () {
+                            _onTapDeleteTaskItemButton(
+                                widget.taskModel.sId.toString());
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          )),
+                    ),
                   ],
                 )
               ],
@@ -59,6 +78,45 @@ class TaskItemWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onTapDeleteTaskItemButton(String id) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Delete Task Item!'),
+            content: const Text('Do you want to delete?'),
+            actions: [
+              OutlinedButton(
+                  onPressed: () {
+                    _deleteTaskItem(id);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Yes')),
+              const SizedBox(width: 20,),
+              OutlinedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('No')),
+            ],
+          );
+        });
+  }
+
+  Future<void> _deleteTaskItem(String id) async {
+    _deleteTaskItemInProgress = true;
+    setState(() {});
+    final NetworkResponse response =
+        await NetworkCaller.getRequest(url: Urls.deleteTaskItemUrl(id));
+    _deleteTaskItemInProgress = false;
+    setState(() {});
+    if (response.isSuccess) {
+      showSnackBarMessage(context, 'delete successful');
+    } else {
+      showSnackBarMessage(context, response.errorMessage);
+    }
   }
 
   Color _getStatusColor(String status) {

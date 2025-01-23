@@ -1,17 +1,17 @@
-import 'package:task_manager_ostad/data/models/task_model.dart';
+import 'package:task_manager_ostad/data/models/task_list_model.dart';
 
 class TaskListByStatusModel {
   String? status;
-  List<TaskModel>? taskList;
+  List<TaskListModel>? taskList;
 
   TaskListByStatusModel({this.status, this.taskList});
 
   TaskListByStatusModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     if (json['data'] != null) {
-      taskList = <TaskModel>[];
+      taskList = <TaskListModel>[];
       json['data'].forEach((v) {
-        taskList!.add( TaskModel.fromJson(v));
+        taskList!.add( TaskListModel.fromJson(v));
       });
     }
   }
