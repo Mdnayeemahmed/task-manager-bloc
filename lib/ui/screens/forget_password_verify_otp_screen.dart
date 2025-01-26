@@ -6,11 +6,14 @@ import 'package:task_manager_ostad/data/utills/urls.dart';
 import 'package:task_manager_ostad/ui/screens/reset_password_screen.dart';
 import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 import 'package:task_manager_ostad/ui/utills/app_colors.dart';
+import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
 import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
 
 class ForgetPasswordVerifyOtpScreen extends StatefulWidget {
-  const ForgetPasswordVerifyOtpScreen({super.key});
+  const ForgetPasswordVerifyOtpScreen({super.key, this.email, this.otp});
+  final String? email;
+  final String? otp;
   static const String name = '/forget-password-verify-otp';
 
   @override
@@ -22,7 +25,7 @@ class _ForgetPasswordVerifyOtpScreenState
     extends State<ForgetPasswordVerifyOtpScreen> {
   final TextEditingController _otpTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _otpVerifyInProgress=false;
+  bool _otpVerifyInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +50,7 @@ class _ForgetPasswordVerifyOtpScreenState
                   const SizedBox(
                     height: 8,
                   ),
-                   Text(
+                  Text(
                     'A 6 digits verification OTP has been sent to your email address',
                     style: textTheme.titleSmall,
                   ),
@@ -58,9 +61,15 @@ class _ForgetPasswordVerifyOtpScreenState
                   const SizedBox(
                     height: 16,
                   ),
-                  ElevatedButton(onPressed: () {
-                    Navigator.pushNamed(context, ResetPasswordScreen.name);
-                  }, child: const Text('Verify')),
+                  Visibility(
+                    visible: _otpVerifyInProgress==false,
+                    replacement: const CenterCircularProgressIndicator(),
+                    child: ElevatedButton(
+                        onPressed: () {
+                         _onTapOtpVerifyButton();
+                        },
+                        child: const Text('Verify')),
+                  ),
                   const SizedBox(
                     height: 48,
                   ),
@@ -76,25 +85,27 @@ class _ForgetPasswordVerifyOtpScreenState
     );
   }
 
-  // void _onTapOtpVerifyButton(){
-  //   if(_formKey.currentState!.validate()){
-  //     _otpVerify();
-  //   }
-  // }
-  //
-  // Future<void> _otpVerify()async{
-  //   _otpVerifyInProgress=true;
-  //   final NetworkResponse response =await NetworkCaller.getRequest(url: Urls. (widge.email.toStringz(), _otpTEController.text));
-  //   debugPrint(response.isSuccess as String?);
-  //   debugPrint(response.statusCode as String?);
-  //   if(response.responseData?['status']!='fail'){
-  //     Navigator.pushNamed(context, ResetPasswordScreen.name);
-  //   } else{
-  //     showSnackBarMessage(context, response.errorMessage);
-  //   }
-  //   _otpVerifyInProgress=false;
-  //   setState(() {});
-  // }
+  void _onTapOtpVerifyButton() {
+    if (_formKey.currentState!.validate()) {
+      _otpVerify();
+    }
+  }
+
+  Future<void> _otpVerify() async {
+    _otpVerifyInProgress = true;
+    setState(() {});
+    final NetworkResponse response = await NetworkCaller.getRequest(
+        url: Urls.forgetVerifyOtpUrl(widget.email.toString(),_otpTEController.text));
+    if (response.responseData!['status']=='success') {
+      Navigator.pushNamed(context, ResetPasswordScreen.name,arguments:[widget.email,_otpTEController.text]);
+      showSnackBarMessage(context, 'successful');
+
+    } else {
+      showSnackBarMessage(context, response.errorMessage);
+    }
+    _otpVerifyInProgress = false;
+    setState(() {});
+  }
 
   Widget _buildPinCodeTextField() {
     return PinCodeTextField(
@@ -103,18 +114,18 @@ class _ForgetPasswordVerifyOtpScreenState
       keyboardType: TextInputType.number,
       animationType: AnimationType.fade,
       pinTheme: PinTheme(
-          shape: PinCodeFieldShape.box,
-          borderRadius: BorderRadius.circular(5),
-          fieldHeight: 50,
-          fieldWidth: 40,
-          activeFillColor: Colors.white,
-          selectedFillColor: Colors.white,
-          inactiveFillColor: Colors.white,
+        shape: PinCodeFieldShape.box,
+        borderRadius: BorderRadius.circular(5),
+        fieldHeight: 50,
+        fieldWidth: 40,
+        activeFillColor: Colors.white,
+        selectedFillColor: Colors.white,
+        inactiveFillColor: Colors.white,
         inactiveColor: Colors.blue,
-       selectedColor: Colors.blue,
+        selectedColor: Colors.blue,
       ),
       animationDuration: const Duration(milliseconds: 300),
-     backgroundColor: Colors.transparent,
+      backgroundColor: Colors.transparent,
       enableActiveFill: true,
       controller: _otpTEController,
       appContext: context,

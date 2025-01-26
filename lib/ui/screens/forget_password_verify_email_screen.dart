@@ -4,11 +4,13 @@ import 'package:task_manager_ostad/data/service/network_caller.dart';
 import 'package:task_manager_ostad/data/utills/urls.dart';
 import 'package:task_manager_ostad/ui/screens/forget_password_verify_otp_screen.dart';
 import 'package:task_manager_ostad/ui/utills/app_colors.dart';
+import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
 import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
 
 class ForgetPasswordVerifyEmailScreen extends StatefulWidget {
   const ForgetPasswordVerifyEmailScreen({super.key});
+
   static const String name = '/forget-password-verify';
 
   @override
@@ -68,12 +70,15 @@ class _ForgetPasswordVerifyEmailScreenState
                   const SizedBox(
                     height: 16,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context, ForgetPasswordVerifyOtpScreen.name);
-                    },
-                    child: const Icon(Icons.arrow_circle_right_outlined),
+                  Visibility(
+                    visible: _emailVerifyInProgress==false,
+                    replacement: const CenterCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _onTapEmailVerifyButton();
+                      },
+                      child: const Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
                   const SizedBox(
                     height: 48,
@@ -90,27 +95,28 @@ class _ForgetPasswordVerifyEmailScreenState
     );
   }
 
-  // void _onTapEmailVerifyButton(){
-  //   if(_formKey.currentState!.validate()){
-  //    _emailVerify();
-  //   }
-  // }
-  //
-  // Future<void> _emailVerify()async{
-  //   _emailVerifyInProgress=true;
-  //   final NetworkResponse response = await NetworkCaller.getRequest(url: Urls. (_emailTEController.text));
-  //
-  //   if(response.isSuccess){
-  //     _emailTEController.text;
-  //     showSnackBarMessage(context, '');
-  //     Navigator.pushNamed(context, ForgetPasswordVerifyOtpScreen.name);
-  //   } else{
-  //     showSnackBarMessage(context, response.errorMessage);
-  //   }
-  // _emailVerifyInProgress=false;
-  //   setState(() {});
-  //
-  // }
+  void _onTapEmailVerifyButton() {
+    if (_formKey.currentState!.validate()) {
+      _emailVerify();
+    }
+  }
+
+  Future<void> _emailVerify() async {
+    _emailVerifyInProgress = true;
+    setState(() {});
+    final NetworkResponse response = await NetworkCaller.getRequest(
+        url: Urls.forgetVerifyEmailUrl(_emailTEController.text));
+
+    if (response.isSuccess) {
+      _emailTEController.text;
+      Navigator.pushNamed(context, ForgetPasswordVerifyOtpScreen.name,
+          arguments: _emailTEController.text);
+    } else {
+      showSnackBarMessage(context, response.errorMessage);
+    }
+    _emailVerifyInProgress = false;
+    setState(() {});
+  }
 
   Widget _buildSignUp() {
     return RichText(

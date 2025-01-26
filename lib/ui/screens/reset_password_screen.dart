@@ -1,12 +1,18 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager_ostad/data/service/network_caller.dart';
+import 'package:task_manager_ostad/data/utills/urls.dart';
 import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 import 'package:task_manager_ostad/ui/utills/app_colors.dart';
+import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
+import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  const ResetPasswordScreen({super.key, this.email, this.otp});
   static const String name = '/reset-password';
+  final String? email;
+  final String? otp;
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -17,7 +23,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       TextEditingController();
   final TextEditingController _confirmPasswordTEController =
       TextEditingController();
-  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _resetPasswordInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: Padding(
             padding: const EdgeInsets.all(32),
             child: Form(
-              key: _globalKey,
+              key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -54,6 +61,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     decoration: const InputDecoration(
                       hintText: 'New Password',
                     ),
+                    validator: (String? value) {
+                      if (value?.isEmpty ?? true) {
+                        return 'enter new password';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 8,
@@ -63,12 +76,24 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     decoration: const InputDecoration(
                       hintText: 'Confirm Password',
                     ),
+                    validator: (String? value) {
+                      if (value?.isEmpty ?? true) {
+                        return "enter confirm password";
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 16,
                   ),
-                  ElevatedButton(
-                      onPressed: () {}, child: const Text('Confirm')),
+                  Visibility(
+                    visible: _resetPasswordInProgress==false,
+                    replacement: const CenterCircularProgressIndicator(),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          _onTapResetButton();
+                        }, child: const Text('Confirm')),
+                  ),
                   const SizedBox(
                     height: 48,
                   ),
@@ -82,6 +107,43 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ),
       ),
     );
+  }
+
+  void _onTapResetButton() {
+    if (_formKey.currentState!.validate()) {
+      _resetPassword();
+    }
+  }
+
+  Future<void> _resetPassword() async {
+    _resetPasswordInProgress = true;
+    setState(() {});
+
+    if(_newPasswordTEController==_confirmPasswordTEController ){
+      Map<String, dynamic> requestBody = {
+        "email": widget.email.toString(),
+        "OTP": widget.otp.toString(),
+        "password": _confirmPasswordTEController.text,
+      };
+      final NetworkResponse response = await NetworkCaller.postRequest(
+          url: Urls.resetPasswordUrl, body: requestBody);
+      if(response.isSuccess){
+        widget.email.toString();
+        widget.otp.toString();
+Navigator.pushNamed(context, SignInScreen.name);
+        showSnackBarMessage(context, 'password change successful');
+      } else{
+        showSnackBarMessage(context, response.errorMessage);
+      }
+
+    } else{
+      showSnackBarMessage(context, "don't match this password");
+      _resetPasswordInProgress=false;
+    }
+
+
+    _resetPasswordInProgress==false;
+    setState(() {});
   }
 
   Widget _buildSignUp() {

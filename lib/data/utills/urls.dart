@@ -9,6 +9,12 @@ class Urls {
   static String taskListByStatusUrl(String status) =>
       '$_baseUrl/listTaskByStatus/$status';
   static const String updateProfileUrl = '$_baseUrl/profileUpdate';
- static  String deleteTaskItemUrl(String id) => '$_baseUrl/deleteTask/$id';
-
+  static String deleteTaskItemUrl(String id) => '$_baseUrl/deleteTask/$id';
+  static String forgetVerifyEmailUrl(String email) =>
+      '$_baseUrl/RecoverVerifyEmail/$email';
+  static String forgetVerifyOtpUrl(String email, String otp) =>
+      '$_baseUrl/RecoverVerifyOTP/$email/$otp';
+  static const String resetPasswordUrl = '$_baseUrl/RecoverResetPass';
+  static String updateTaskUrl(String taskId, String status) =>
+      '$_baseUrl/updateTaskStatus/$taskId/$status';
 }

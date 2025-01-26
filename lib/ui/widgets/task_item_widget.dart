@@ -1,133 +1,202 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager_ostad/data/models/task_list_model.dart';
-import 'package:task_manager_ostad/data/service/network_caller.dart';
-import 'package:task_manager_ostad/data/utills/urls.dart';
-import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
-import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
 
-class TaskItemWidget extends StatefulWidget {
-  const TaskItemWidget({
-    super.key,
+import '../../data/models/task_list_model.dart';
+
+class TaskItems extends StatelessWidget {
+  const TaskItems({
+    Key? key,
     required this.taskModel,
-  });
+    required this.onDeleteTask,
+    required this.onUpdateTaskStatus,
+  }) : super(key: key);
+
   final TaskListModel taskModel;
 
-  @override
-  State<TaskItemWidget> createState() => _TaskItemWidgetState();
-}
-
-class _TaskItemWidgetState extends State<TaskItemWidget> {
-  bool _deleteTaskItemInProgress = false;
+  final Future<void> Function(String taskId) onDeleteTask;
+  final Future<void> Function(String taskId, String newStatus)
+      onUpdateTaskStatus;
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    //final chipTheme = Theme.of(context).chipTheme;
+
+    final String statusText = taskModel.status ?? 'New';
+    final Color statusColor;
+
+    switch (statusText) {
+      case 'New':
+        statusColor = Colors.blue;
+        break;
+      case 'Progress':
+        statusColor = Colors.amber;
+        break;
+      case 'Completed':
+        statusColor = Colors.green;
+        break;
+      case 'Canceled':
+        statusColor = Colors.red;
+        break;
+      default:
+        statusColor = Colors.grey;
+    }
+
     return Card(
       color: Colors.white,
       elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      clipBehavior: Clip.antiAlias,
       child: ListTile(
+        tileColor: Colors.white,
         title: Text(
-          widget.taskModel.title ?? '',
-          style: textTheme.titleMedium,
+          taskModel.title ?? '',
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.taskModel.description ?? '',
-                style: textTheme.titleSmall),
-            Text('Date: ${widget.taskModel.createdDate ?? ''}',
-                style: textTheme.titleSmall),
+            Text(
+              taskModel.description ?? '',
+            ),
+            Text(
+              'Date:${taskModel.createdDate ?? ''}',
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Chip(
-                  label: Text(
-                    widget.taskModel.status ?? 'New',
-                    style: const TextStyle(color: Colors.white),
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: statusColor,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  backgroundColor:
-                      _getStatusColor(widget.taskModel.status ?? 'New'),
-                  side: BorderSide.none,
+                  child: Text(
+                    statusText,
+                    style: textTheme.titleSmall?.copyWith(color: Colors.white),
+                  ),
                 ),
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.edit,
-                          color: Colors.cyan,
-                        )),
-                    Visibility(
-                      visible: _deleteTaskItemInProgress == false,
-                      replacement: const CenterCircularProgressIndicator(),
-                      child: IconButton(
-                          onPressed: () {
-                            _onTapDeleteTaskItemButton(
-                                widget.taskModel.sId.toString());
-                          },
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          )),
+                Row(children: [
+                  IconButton(
+                    onPressed: () async {
+                      final String? newStatus = await _showEditStatusDialog(
+                        context,
+                        taskModel.status ?? '',
+                      );
+                      if (newStatus != null && newStatus != taskModel.status) {
+                        await onUpdateTaskStatus(
+                            taskModel.sId ?? '', newStatus);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.blue,
                     ),
-                  ],
-                )
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      final bool? confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Are you sure?'),
+                            content: const Text('Do you want to delete?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, false);
+                                },
+                                child: const Text('No'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                                child: const Text('Yes'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (confirm == true) {
+                        await onDeleteTask(taskModel.sId ?? '');
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                  ),
+                ])
               ],
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  void _onTapDeleteTaskItemButton(String id) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Delete Task Item!'),
-            content: const Text('Do you want to delete?'),
-            actions: [
-              OutlinedButton(
+  Future<String?> _showEditStatusDialog(
+      BuildContext context, String currentStatus) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String? selectedStatus = currentStatus;
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: const Text('Update Task Status'),
+              content: DropdownButton<String>(
+                value: selectedStatus,
+                isExpanded: true,
+                items: const [
+                  DropdownMenuItem(
+                    value: 'New',
+                    child: Text('New'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Progress',
+                    child: Text('Progress'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Completed',
+                    child: Text('Completed'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Canceled',
+                    child: Text('Canceled'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    selectedStatus = value;
+                  });
+                },
+              ),
+              actions: [
+                TextButton(
                   onPressed: () {
-                    _deleteTaskItem(id);
-                    Navigator.pop(context);
+                    Navigator.pop(context, null);
                   },
-                  child: const Text('Yes')),
-              const SizedBox(width: 20,),
-              OutlinedButton(
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+                TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context, selectedStatus);
                   },
-                  child: const Text('No')),
-            ],
-          );
-        });
-  }
-
-  Future<void> _deleteTaskItem(String id) async {
-    _deleteTaskItemInProgress = true;
-    setState(() {});
-    final NetworkResponse response =
-        await NetworkCaller.getRequest(url: Urls.deleteTaskItemUrl(id));
-    _deleteTaskItemInProgress = false;
-    setState(() {});
-    if (response.isSuccess) {
-      showSnackBarMessage(context, 'delete successful');
-    } else {
-      showSnackBarMessage(context, response.errorMessage);
-    }
-  }
-
-  Color _getStatusColor(String status) {
-    if (status == 'New') {
-      return Colors.cyan;
-    } else if (status == 'Progress') {
-      return Colors.purple;
-    } else if (status == 'Completed') {
-      return Colors.green;
-    } else {
-      return Colors.red;
-    }
+                  child: const Text(
+                    'Update',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }

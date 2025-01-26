@@ -8,6 +8,7 @@ import 'package:task_manager_ostad/ui/screens/add_new_task_list_screen.dart';
 import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
 import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
+import '../widgets/copy_code.dart';
 import '../widgets/task_card_status_widget.dart';
 import '../widgets/task_item_widget.dart';
 import '../widgets/tm_app_bar.dart';
@@ -28,8 +29,9 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
   @override
   void initState() {
     super.initState();
-    _getTaskCountByStatus();
-    _getNewTaskList();
+    _fetchAllData();
+    // _getTaskCountByStatus();
+    // _getNewTaskList();
 
   }
 
@@ -91,12 +93,50 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
         primary: false,
         itemCount: newTaskListModel?.taskList?.length ?? 0,
         itemBuilder: (context, index) {
-          return TaskItemWidget(
+          return TaskItems(
             taskModel: newTaskListModel!.taskList![index],
-
+            onDeleteTask: _deleteTask,
+            onUpdateTaskStatus: _updateTaskStatus,
           );
         });
   }
+
+  Future<void> _fetchAllData()async{
+    try{
+      await _getTaskCountByStatus();
+      await _getNewTaskList();
+    } catch(e){
+      showSnackBarMessage(context, e.toString());
+    }
+  }
+
+  Future<void> _deleteTask(String taskId)async{
+    final NetworkResponse response =await NetworkCaller.getRequest(url: Urls.deleteTaskItemUrl(taskId));
+
+    if(response.isSuccess){
+      _fetchAllData();
+      showSnackBarMessage(context, 'task delete successful');
+
+    } else{
+      showSnackBarMessage(context, response.errorMessage);
+    }
+  }
+
+
+
+  Future<void> _updateTaskStatus(String taskId,String newStatus)async{
+    final String Url = Urls.updateTaskUrl(taskId, newStatus);
+    final NetworkResponse response =await NetworkCaller.getRequest(url:Url);
+
+    if(response.isSuccess){
+      _fetchAllData();
+      showSnackBarMessage(context, 'task status updated successfully');
+
+    } else{
+      showSnackBarMessage(context, response.errorMessage);
+    }
+  }
+
 
   Future<void> _getTaskCountByStatus() async {
     _getTaskCountByStatusInProgress = true;
