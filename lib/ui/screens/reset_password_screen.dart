@@ -87,12 +87,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     height: 16,
                   ),
                   Visibility(
-                    visible: _resetPasswordInProgress==false,
+                    visible: _resetPasswordInProgress == false,
                     replacement: const CenterCircularProgressIndicator(),
                     child: ElevatedButton(
                         onPressed: () {
                           _onTapResetButton();
-                        }, child: const Text('Confirm')),
+                        },
+                        child: const Text('Confirm')),
                   ),
                   const SizedBox(
                     height: 48,
@@ -118,8 +119,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Future<void> _resetPassword() async {
     _resetPasswordInProgress = true;
     setState(() {});
-
-    if(_newPasswordTEController==_confirmPasswordTEController ){
+    if (_newPasswordTEController.text == _confirmPasswordTEController.text) {
       Map<String, dynamic> requestBody = {
         "email": widget.email.toString(),
         "OTP": widget.otp.toString(),
@@ -127,23 +127,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       };
       final NetworkResponse response = await NetworkCaller.postRequest(
           url: Urls.resetPasswordUrl, body: requestBody);
-      if(response.isSuccess){
+      _resetPasswordInProgress == false;
+      setState(() {});
+      if (response.isSuccess) {
         widget.email.toString();
         widget.otp.toString();
-Navigator.pushNamed(context, SignInScreen.name);
+        Navigator.pushNamed(context, SignInScreen.name);
         showSnackBarMessage(context, 'password change successful');
-      } else{
+      } else {
         showSnackBarMessage(context, response.errorMessage);
       }
-
-    } else{
+    } else {
       showSnackBarMessage(context, "don't match this password");
-      _resetPasswordInProgress=false;
+      _resetPasswordInProgress == false;
+      setState(() {});
     }
-
-
-    _resetPasswordInProgress==false;
-    setState(() {});
   }
 
   Widget _buildSignUp() {

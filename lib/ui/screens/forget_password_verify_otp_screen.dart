@@ -62,11 +62,11 @@ class _ForgetPasswordVerifyOtpScreenState
                     height: 16,
                   ),
                   Visibility(
-                    visible: _otpVerifyInProgress==false,
+                    visible: _otpVerifyInProgress == false,
                     replacement: const CenterCircularProgressIndicator(),
                     child: ElevatedButton(
                         onPressed: () {
-                         _onTapOtpVerifyButton();
+                          _onTapOtpVerifyButton();
                         },
                         child: const Text('Verify')),
                   ),
@@ -95,11 +95,12 @@ class _ForgetPasswordVerifyOtpScreenState
     _otpVerifyInProgress = true;
     setState(() {});
     final NetworkResponse response = await NetworkCaller.getRequest(
-        url: Urls.forgetVerifyOtpUrl(widget.email.toString(),_otpTEController.text));
-    if (response.responseData!['status']=='success') {
-      Navigator.pushNamed(context, ResetPasswordScreen.name,arguments:[widget.email,_otpTEController.text]);
+        url: Urls.forgetVerifyOtpUrl(
+            widget.email.toString(), _otpTEController.text));
+    if (response.responseData!['status'] == 'success') {
+      Navigator.pushNamed(context, ResetPasswordScreen.name,
+          arguments: [widget.email, _otpTEController.text]);
       showSnackBarMessage(context, 'successful');
-
     } else {
       showSnackBarMessage(context, response.errorMessage);
     }

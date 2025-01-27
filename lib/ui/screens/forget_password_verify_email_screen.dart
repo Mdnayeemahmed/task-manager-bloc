@@ -71,7 +71,7 @@ class _ForgetPasswordVerifyEmailScreenState
                     height: 16,
                   ),
                   Visibility(
-                    visible: _emailVerifyInProgress==false,
+                    visible: _emailVerifyInProgress == false,
                     replacement: const CenterCircularProgressIndicator(),
                     child: ElevatedButton(
                       onPressed: () {
@@ -109,8 +109,14 @@ class _ForgetPasswordVerifyEmailScreenState
 
     if (response.isSuccess) {
       _emailTEController.text;
-      Navigator.pushNamed(context, ForgetPasswordVerifyOtpScreen.name,
-          arguments: _emailTEController.text);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ForgetPasswordVerifyOtpScreen(
+            email: _emailTEController.text,
+          ),
+        ),
+      );
     } else {
       showSnackBarMessage(context, response.errorMessage);
     }

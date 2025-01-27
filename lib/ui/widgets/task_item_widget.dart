@@ -1,20 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/task_list_model.dart';
 
 class TaskItems extends StatelessWidget {
   const TaskItems({
-    Key? key,
+    super.key,
     required this.taskModel,
     required this.onDeleteTask,
     required this.onUpdateTaskStatus,
-  }) : super(key: key);
+  });
 
   final TaskListModel taskModel;
 
-  final Future<void> Function(String taskId) onDeleteTask;
-  final Future<void> Function(String taskId, String newStatus)
+  final Future<void> Function(String id) onDeleteTask;
+  final Future<void> Function(String id, String status)
       onUpdateTaskStatus;
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class TaskItems extends StatelessWidget {
 
     switch (statusText) {
       case 'New':
-        statusColor = Colors.blue;
+        statusColor = Colors.cyan;
         break;
       case 'Progress':
         statusColor = Colors.amber;
@@ -89,7 +88,7 @@ class TaskItems extends StatelessWidget {
                     },
                     icon: const Icon(
                       Icons.edit,
-                      color: Colors.blue,
+                      color: Colors.cyan,
                     ),
                   ),
                   IconButton(
@@ -189,7 +188,7 @@ class TaskItems extends StatelessWidget {
                   },
                   child: const Text(
                     'Update',
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(color: Colors.cyan),
                   ),
                 ),
               ],
