@@ -127,7 +127,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       };
       final NetworkResponse response = await NetworkCaller.postRequest(
           url: Urls.resetPasswordUrl, body: requestBody);
-      _resetPasswordInProgress == false;
+      _resetPasswordInProgress = false;
       setState(() {});
       if (response.isSuccess) {
         widget.email.toString();
@@ -139,7 +139,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       }
     } else {
       showSnackBarMessage(context, "don't match this password");
-      _resetPasswordInProgress == false;
+      _resetPasswordInProgress = false;
       setState(() {});
     }
   }

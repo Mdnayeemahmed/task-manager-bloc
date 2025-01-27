@@ -14,6 +14,7 @@ class AuthController {
     await sharedPreferences.setString(_userDataKey, jsonEncode(model.toJson()));
     accessToken = token;
     accessToken = accessToken;
+    userModel = model;
   }
 
   static Future<void> gerUserData()async{
