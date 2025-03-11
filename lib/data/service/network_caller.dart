@@ -6,19 +6,19 @@ import 'package:task_manager_ostad/app/app.dart';
 import 'package:task_manager_ostad/ui/controllers/auth_controller.dart';
 import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 
-class NetworkResponse {
-  final int statusCode;
-  final bool isSuccess;
-  final Map<String, dynamic>? responseData;
-  final String errorMessage;
-
-  NetworkResponse({
-    required this.isSuccess,
-    required this.statusCode,
-    this.responseData,
-    this.errorMessage = 'Something went wrong',
-  });
-}
+// class NetworkResponse {
+//   final int statusCode;
+//   final bool isSuccess;
+//   final Map<String, dynamic>? responseData;
+//   final String errorMessage;
+//
+//   NetworkResponse({
+//     required this.isSuccess,
+//     required this.statusCode,
+//     this.responseData,
+//     this.errorMessage = 'Something went wrong',
+//   });
+// }
 
 class NetworkCaller {
   static Future<NetworkResponse> getRequest(

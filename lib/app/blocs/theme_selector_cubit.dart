@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sm_app/core/repository/theme_repository.dart';
+
+import '../../core/repository/theme_repository.dart';
 
 class ThemeSelectorCubit extends Cubit<ThemeMode> {
   ThemeSelectorCubit(this.themeModeRepository) : super(ThemeMode.system);

@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sm_app/core/repository/language_repository.dart';
+
+import '../../core/repository/language_repository.dart';
 
 class LanguageSelectorCubit extends Cubit<Locale> {
   LanguageSelectorCubit(this.languageRepository) : super(const Locale('en'));

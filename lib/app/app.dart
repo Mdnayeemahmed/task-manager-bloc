@@ -15,6 +15,8 @@ import 'package:task_manager_ostad/ui/utills/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../core/repository/language_repository.dart';
+import '../core/repository/theme_repository.dart';
 import 'app_router.dart';
 import 'blocs/language_selector_cubit.dart';
 import 'blocs/theme_selector_cubit.dart';
