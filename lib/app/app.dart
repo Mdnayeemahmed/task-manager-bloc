@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_ostad/app/service_locator.dart';
 import 'package:task_manager_ostad/ui/screens/add_new_task_list_screen.dart';
 import 'package:task_manager_ostad/ui/screens/forget_password_verify_email_screen.dart';
 import 'package:task_manager_ostad/ui/screens/forget_password_verify_otp_screen.dart';
@@ -9,6 +10,92 @@ import 'package:task_manager_ostad/ui/screens/sign_up_screen.dart';
 import 'package:task_manager_ostad/ui/screens/spiash_screen.dart';
 import 'package:task_manager_ostad/ui/screens/update_profile_screen.dart';
 import 'package:task_manager_ostad/ui/utills/app_colors.dart';
+
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'app_router.dart';
+import 'blocs/language_selector_cubit.dart';
+import 'blocs/theme_selector_cubit.dart';
+
+
+class TaskManager extends StatefulWidget {
+  const TaskManager({super.key});
+
+  @override
+  State<TaskManager> createState() => _TaskManagerState();
+}
+
+class _TaskManagerState extends State<TaskManager> {
+  late final LanguageSelectorCubit _languageSelectorCubit;
+  late final ThemeSelectorCubit _themeSelectorCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _languageSelectorCubit = LanguageSelectorCubit(sl<LanguageRepository>());
+    _themeSelectorCubit = ThemeSelectorCubit(sl<ThemeModeRepository>());
+    _languageSelectorCubit.getPreSelectedLocale();
+    _themeSelectorCubit.getPreSelectedTheme();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _languageSelectorCubit),
+        BlocProvider.value(value: _themeSelectorCubit),
+        BlocProvider(create: (_) => GlobalAuthCubit(sl())),
+      ],
+      child: BlocListener<GlobalAuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthUnverifiedState) {
+            AppRouter.push(
+              AppRouter.globalKey.currentContext!,
+              LoginScreen.name,
+            );
+          }
+        },
+        child: BlocBuilder<LanguageSelectorCubit, Locale>(
+          builder: (context, Locale language) {
+            return BlocBuilder<ThemeSelectorCubit, ThemeMode>(
+              builder: (context, ThemeMode themeMode) {
+                return MaterialApp.router(
+                  title: 'SM app',
+                  locale: language,
+                  routeInformationParser:
+                  AppRouter.router.routeInformationParser,
+                  routerDelegate: AppRouter.router.routerDelegate,
+                  routeInformationProvider:
+                  AppRouter.router.routeInformationProvider,
+                  theme: GlobalThemeData.lightTheme,
+                  darkTheme: GlobalThemeData.darkTheme,
+                  themeMode: themeMode,
+                  supportedLocales: _languageSelectorCubit.locales,
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _languageSelectorCubit.close();
+    super.dispose();
+  }
+}
+
+
 
 class TaskManager extends StatelessWidget {
   const TaskManager({super.key});

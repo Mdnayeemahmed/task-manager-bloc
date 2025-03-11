@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:task_manager_ostad/app.dart';
+import 'package:task_manager_ostad/app/app.dart';
 
 import 'package:task_manager_ostad/main.dart';
 

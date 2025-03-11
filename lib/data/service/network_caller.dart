@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:task_manager_ostad/app.dart';
+import 'package:task_manager_ostad/app/app.dart';
 import 'package:task_manager_ostad/ui/controllers/auth_controller.dart';
 import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 
