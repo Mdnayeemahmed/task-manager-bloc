@@ -1,4 +1,6 @@
 
+import 'const.dart';
+
 class AppUtility {
   static bool validateBDPhoneNumber(String value) {
     return AppConstants.bdPhoneNoValidationRegex.hasMatch(value);

@@ -1,5 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+
+import '../core/network_executor/dio_set_up.dart';
+import '../core/network_executor/network_executor.dart';
+import '../core/repository/language_repository.dart';
+import '../core/repository/theme_repository.dart';
 final sl = GetIt.instance;
 
 class ServiceLocator {
