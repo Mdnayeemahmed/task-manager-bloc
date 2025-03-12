@@ -7,7 +7,7 @@ import 'package:task_manager_ostad/ui/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager_ostad/ui/screens/reset_password_screen.dart';
 import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 import 'package:task_manager_ostad/ui/screens/sign_up_screen.dart';
-import 'package:task_manager_ostad/ui/screens/spiash_screen.dart';
+import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/spiash_screen.dart';
 import 'package:task_manager_ostad/ui/screens/update_profile_screen.dart';
 import 'package:task_manager_ostad/ui/utills/app_colors.dart';
 

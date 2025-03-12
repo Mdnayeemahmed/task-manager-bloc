@@ -5,6 +5,7 @@ import '../core/network_executor/dio_set_up.dart';
 import '../core/network_executor/network_executor.dart';
 import '../core/repository/language_repository.dart';
 import '../core/repository/theme_repository.dart';
+import '../feature/auth/data/repositories/auth_local_data_source.dart';
 final sl = GetIt.instance;
 
 class ServiceLocator {

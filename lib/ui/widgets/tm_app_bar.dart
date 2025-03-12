@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 import 'package:task_manager_ostad/ui/screens/update_profile_screen.dart';
+import '../../feature/auth/data/repositories/auth_local_data_source.dart';
 import '../controllers/auth_controller.dart';
 import '../utills/app_colors.dart';
 
@@ -28,7 +29,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: CircleAvatar(
               radius: 20,
               backgroundImage: MemoryImage(
-                  base64Decode(AuthController.userModel?.photo ?? '')),
+                  base64Decode(AuthLocalDataSource.userModel?.photo ?? '')),
               onBackgroundImageError: (_, __) => const Icon(Icons.person),
             ),
           ),
@@ -39,11 +40,11 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(AuthController.userModel?.fullName ?? '',
+                Text(AuthLocalDataSource.userModel?.fullName ?? '',
                     style:
                         textTheme.titleMedium?.copyWith(color: Colors.white)),
                 Text(
-                  AuthController.userModel?.email ?? '',
+                  AuthLocalDataSource.userModel?.email ?? '',
                   style: textTheme.titleSmall?.copyWith(color: Colors.white),
                 ),
               ],
@@ -51,7 +52,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           IconButton(
             onPressed: () async {
-              await AuthController.clearUserData();
+              await AuthLocalDataSource.clearUserData();
               Navigator.pushNamedAndRemoveUntil(
                   context, SignInScreen.name, (predicate) => false);
             },

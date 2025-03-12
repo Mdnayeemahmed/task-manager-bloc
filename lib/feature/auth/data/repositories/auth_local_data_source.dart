@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager_ostad/data/models/user_model.dart';
 
-class AuthController {
+class AuthLocalDataSource {
   static String? accessToken;
   static UserModel? userModel;
 
-  static const String _accessTokenKey = 'access-token';
-  static const String _userDataKey = 'user-data';
-  static Future<void> saveUserData(String token, UserModel model) async {
+   final String _accessTokenKey = 'access-token';
+   final String _userDataKey = 'user-data';
+   Future<void> saveUserData(String token, UserModel model) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString(_accessTokenKey, token);
     await sharedPreferences.setString(_userDataKey, jsonEncode(model.toJson()));
@@ -17,7 +17,7 @@ class AuthController {
     userModel = model;
   }
 
-  static Future<void> gerUserData()async{
+   Future<void> gerUserData()async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString(_accessTokenKey);
     String? userData = sharedPreferences.getString(_userDataKey);
@@ -25,7 +25,7 @@ class AuthController {
     userModel = UserModel.fromJson(jsonDecode(userData!));
   }
 
-  static Future<bool> isUserLoggedIn() async {
+   Future<bool> isUserLoggedIn() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString(_accessTokenKey);
     if(token != null){
@@ -35,7 +35,7 @@ class AuthController {
     return false;
   }
 
-  static Future<void> clearUserData()async{
+   Future<void> clearUserData()async{
     SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
     await sharedPreferences.clear();
   }

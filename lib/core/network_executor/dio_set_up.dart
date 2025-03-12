@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app/app_config/app_configurations.dart';
 import '../../app/app_router.dart';
 import '../../app/service_locator.dart';
+import '../../feature/auth/data/repositories/auth_repository.dart';
 import '../interceptors/refresh_token_interceptor.dart';
 import 'dio_interceptor.dart';
 

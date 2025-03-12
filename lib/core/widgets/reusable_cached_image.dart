@@ -1,8 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:sm_app/app/app_configurations/app_configurations.dart';
-import 'package:sm_app/app/styling/app_colors.dart';
-
 import '../../app/app_config/app_configurations.dart';
 
 class ReusableCachedImage extends StatelessWidget {

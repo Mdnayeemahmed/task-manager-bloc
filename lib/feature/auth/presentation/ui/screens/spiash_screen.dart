@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager_ostad/ui/controllers/auth_controller.dart';
 import 'package:task_manager_ostad/ui/screens/main_bottom_nav_screen.dart';
-import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
 import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
-import '../widgets/app_logo.dart';
+import '../../../../../ui/widgets/app_logo.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
