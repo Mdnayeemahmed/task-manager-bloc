@@ -8,6 +8,7 @@ import 'package:sm_app/features/auth/data/repositories/auth_local_data_source.da
 import 'package:sm_app/features/auth/domain/entities/login.dart';
 import 'package:sm_app/features/auth/domain/entities/token.dart';
 
+import '../../../../core/domain/domain.dart';
 import '../../../../core/network_executor/network_executor.dart';
 import 'auth_local_data_source.dart';
 

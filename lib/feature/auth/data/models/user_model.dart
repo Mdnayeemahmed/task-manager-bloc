@@ -28,6 +28,7 @@ class UserModel {
       'photo': user.photo,
     };
   }
+
   User toEntity() => user;
 
   // UserModel toEntity() => UserModel(
