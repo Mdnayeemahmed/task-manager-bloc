@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:task_manager_ostad/app/router_error_screen.dart';
+
+import '../feature/auth/presentation/auth_routes.dart';
+import '../feature/auth/presentation/ui/screens/spiash_screen.dart';
+import '../feature/common/presentation/screen/theme_demo_screen.dart';
 
 
 class AppRouter {
@@ -20,8 +25,8 @@ class AppRouter {
             return const ThemeDemoScreen();
           }),
       ...AuthRoutes.routes,
-      ...MainMenuRoutes.routes,
-      ...DashboardRoutes.routes,
+      // ...MainMenuRoutes.routes,
+      // ...DashboardRoutes.routes,
     ],
     errorBuilder: (context, state) {
       return RouteErrorScreen(

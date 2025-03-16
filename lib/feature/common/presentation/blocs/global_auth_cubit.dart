@@ -15,13 +15,13 @@ class GlobalAuthCubit extends Cubit<AuthState> {
 
   Future<void> initialize() async {
     final access = await authRepository.getUserAccessToken();
-    final refresh = await authRepository.getRefreshToken();
+    // final refresh = await authRepository.getRefreshToken();
     if (access != null) {
       accessToken = access;
     }
-    if (refresh != null) {
-      refreshToken = refresh;
-    }
+    // if (refresh != null) {
+    //   refreshToken = refresh;
+    // }
     emit(AuthVerifiedState());
   }
 

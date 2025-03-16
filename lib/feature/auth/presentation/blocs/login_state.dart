@@ -23,7 +23,7 @@ class LogInFailureState extends LogInState {
 class LogInInSuccessState extends LogInState {
   const LogInInSuccessState(this.loginData);
 
-  final Login loginData;
+  final User loginData;
 
   @override
   List<Object> get props => [loginData];

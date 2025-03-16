@@ -1,37 +1,53 @@
 import '../../domain/entites/user.dart';
 
 class UserModel {
-  final User user; // ✅ Use User as a field inside UserModel
+  String? email;
+  String? firstName;
+  String? lastName;
+  String? mobile;
+  String? photo;
 
-  UserModel({required this.user});
+  UserModel({
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.mobile,
+    this.photo,
+  });
+
+  // Computed full name
+  String get fullName => '$firstName $lastName';
 
   // Convert JSON to UserModel
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      user: User(
-        email: json['email'] ?? '',
-        firstName: json['firstName'] ?? '',
-        lastName: json['lastName'] ?? '',
-        mobile: json['mobile'] ?? '',
-        photo: json['photo'] ?? '',
-      ),
+      email: json['email'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      mobile: json['mobile'],
+      photo: json['photo'],
     );
   }
 
   // Convert UserModel to JSON
   Map<String, dynamic> toJson() {
     return {
-      'email': user.email,
-      'firstName': user.firstName,
-      'lastName': user.lastName,
-      'mobile': user.mobile,
-      'photo': user.photo,
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'mobile': mobile,
+      'photo': photo,
     };
   }
 
-  User toEntity() => user;
-
-  // UserModel toEntity() => UserModel(
-  //   user: userModel!.toEntity(),
-  // );
+  // ✅ Convert UserModel to User entity
+  User toEntity() {
+    return User(
+      email: email ?? '',
+      firstName: firstName ?? '',
+      lastName: lastName ?? '',
+      mobile: mobile ?? '',
+      photo: photo ?? '',
+    );
+  }
 }

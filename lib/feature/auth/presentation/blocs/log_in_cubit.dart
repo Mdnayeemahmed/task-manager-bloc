@@ -1,10 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sm_app/features/auth/data/repositories/auth_repository.dart';
-import 'package:sm_app/features/auth/domain/entities/login.dart';
-import 'package:sm_app/features/common/common.dart';
 
+import '../../../common/presentation/blocs/global_auth_cubit.dart';
 import '../../data/repositories/auth_repository.dart';
+import '../../domain/entites/user.dart';
 
 part 'login_state.dart';
 
@@ -14,16 +13,16 @@ class LogInCubit extends Cubit<LogInState> {
 
   LogInCubit(this.authRepository, this.authCubit) : super(LogInInitialState());
 
-  Future<void> userSignIn({required String userName, required String password}) async {
+  Future<void> userSignIn({required String userEmail, required String password}) async {
     emit(LogInLoadingState());
-    final response = await authRepository.signIn(userName, password);
+    final response = await authRepository.signIn(userEmail, password);
     await response.fold(
           (error) {
         emit(LogInFailureState(error.message));
       },
-          (loginData) async {
+          (userData) async {
         await authCubit.initialize();
-        emit(LogInInSuccessState(loginData));
+        emit(LogInInSuccessState(userData));
       },
     );
   }

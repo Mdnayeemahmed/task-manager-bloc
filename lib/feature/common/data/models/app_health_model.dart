@@ -1,4 +1,5 @@
-import 'package:sm_app/features/common/domain/entities/app_health.dart';
+
+import '../../domain/entities/app_health.dart';
 
 class AppHealthModel {
   String? appName;

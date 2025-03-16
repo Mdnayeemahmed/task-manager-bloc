@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
-
-
+import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/sign_in_screen.dart';
+import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/sign_up_screen.dart';
 import 'ui/screens/spiash_screen.dart';
 
 class AuthRoutes {
@@ -13,18 +13,17 @@ class AuthRoutes {
       },
     ),
     GoRoute(
-      path: LoginScreen.name,
-      name: LoginScreen.name,
+      path: SignInScreen.name,
+      name: SignInScreen.name,
       builder: (context, state) {
-        return  const LoginScreen();
+        return  const SignInScreen();
       },
     ),
-
     // GoRoute(
-    //   path: ProductDataTableWidget.name,
-    //   name: ProductDataTableWidget.name,
+    //   path: SignUpScreen.name,
+    //   name: SignUpScreen.name,
     //   builder: (context, state) {
-    //     return ProductDataTableWidget();
+    //     return  const SignUpScreen();
     //   },
     // ),
   ];
