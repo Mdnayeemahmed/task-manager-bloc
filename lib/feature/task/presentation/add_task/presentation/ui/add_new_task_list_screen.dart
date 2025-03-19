@@ -6,6 +6,10 @@ import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
 import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
 import 'package:task_manager_ostad/ui/widgets/tm_app_bar.dart';
 
+import '../../../../common/presentation/widgets/center_circular_progress_indicator.dart';
+import '../../../../common/presentation/widgets/screen_background.dart';
+import '../../../../common/presentation/widgets/tm_app_bar.dart';
+
 class AddNewTaskListScreen extends StatefulWidget {
   const AddNewTaskListScreen({super.key});
   static const String name = '/add-new-task';
