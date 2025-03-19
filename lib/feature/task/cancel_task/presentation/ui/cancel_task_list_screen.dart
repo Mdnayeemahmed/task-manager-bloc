@@ -4,33 +4,33 @@ import 'package:task_manager_ostad/data/models/task_count_model.dart';
 import 'package:task_manager_ostad/data/models/task_list_by_status_model.dart';
 import 'package:task_manager_ostad/data/service/network_caller.dart';
 import 'package:task_manager_ostad/data/utills/urls.dart';
-import 'package:task_manager_ostad/ui/screens/add_new_task_list_screen.dart';
-import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
-import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
-import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
-import '../widgets/task_card_status_widget.dart';
-import '../widgets/task_item_widget.dart';
-import '../widgets/tm_app_bar.dart';
 
-class NewTaskListScreen extends StatefulWidget {
-  const NewTaskListScreen({super.key});
+import '../../../common/presentation/widgets/center_circular_progress_indicator.dart';
+import '../../../common/presentation/widgets/screen_background.dart';
+import '../../../common/presentation/widgets/snack_bar_message.dart';
+import '../../../common/presentation/widgets/task_card_status_widget.dart';
+import '../../../common/presentation/widgets/task_item_widget.dart';
+import '../../../common/presentation/widgets/tm_app_bar.dart';
+
+class CancelTaskListScreen extends StatefulWidget {
+  const CancelTaskListScreen({super.key});
 
   @override
-  State<NewTaskListScreen> createState() => _NewTaskListScreenState();
+  State<CancelTaskListScreen> createState() => _CancelTaskListScreenState();
 }
 
-class _NewTaskListScreenState extends State<NewTaskListScreen> {
+class _CancelTaskListScreenState extends State<CancelTaskListScreen> {
   bool _getTaskCountByStatusInProgress = false;
-  bool _getNewTaskListInProgress = false;
+  bool _getCancelTaskListInProgress = false;
   TaskCountByStatusModel? taskCountByStatusModel;
-  TaskListByStatusModel? newTaskListModel;
+  TaskListByStatusModel? cancelTaskListModel;
 
   @override
   void initState() {
     super.initState();
     _fetchAllData();
     // _getTaskCountByStatus();
-    // _getNewTaskList();
+    // _getCancelTaskList();
   }
 
   @override
@@ -45,7 +45,7 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Visibility(
-                    visible: _getNewTaskListInProgress == false,
+                    visible: _getCancelTaskListInProgress == false,
                     replacement: const CenterCircularProgressIndicator(),
                     child: _buildTaskListView()),
               ),
@@ -90,10 +90,10 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
     return ListView.builder(
         shrinkWrap: true,
         primary: false,
-        itemCount: newTaskListModel?.taskList?.length ?? 0,
+        itemCount: cancelTaskListModel?.taskList?.length ?? 0,
         itemBuilder: (context, index) {
           return TaskItems(
-            taskModel: newTaskListModel!.taskList![index],
+            taskModel: cancelTaskListModel!.taskList![index],
             onDeleteTask: _deleteTask,
             onUpdateTaskStatus: _updateTaskStatus,
           );
@@ -103,7 +103,7 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
   Future<void> _fetchAllData() async {
     try {
       await _getTaskCountByStatus();
-      await _getNewTaskList();
+      await _getCancelTaskList();
     } catch (e) {
       showSnackBarMessage(context, e.toString());
     }
@@ -148,17 +148,18 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
     setState(() {});
   }
 
-  Future<void> _getNewTaskList() async {
-    _getNewTaskListInProgress = true;
+  Future<void> _getCancelTaskList() async {
+    _getCancelTaskListInProgress = true;
     setState(() {});
-    final NetworkResponse response =
-        await NetworkCaller.getRequest(url: Urls.taskListByStatusUrl('New'));
+    final NetworkResponse response = await NetworkCaller.getRequest(
+        url: Urls.taskListByStatusUrl('Canceled'));
     if (response.isSuccess) {
-      newTaskListModel = TaskListByStatusModel.fromJson(response.responseData!);
+      cancelTaskListModel =
+          TaskListByStatusModel.fromJson(response.responseData!);
     } else {
       showSnackBarMessage(context, response.errorMessage);
     }
-    _getNewTaskListInProgress = false;
+    _getCancelTaskListInProgress = false;
     setState(() {});
   }
 }

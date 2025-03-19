@@ -1,11 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:task_manager_ostad/ui/screens/sign_in_screen.dart';
-import 'package:task_manager_ostad/ui/screens/update_profile_screen.dart';
-import '../../feature/auth/data/repositories/auth_local_data_source.dart';
-import '../controllers/auth_controller.dart';
-import '../utills/app_colors.dart';
+import 'package:task_manager_ostad/feature/profile/presentation/ui/update_profile_screen.dart';
+import '../../../../app/styling/app_colors.dart';
 
 class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   const TMAppBar({
@@ -17,7 +13,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return AppBar(
-      backgroundColor: AppColor.themeColor,
+      backgroundColor:themeColor,
       title: Row(
         children: [
           GestureDetector(

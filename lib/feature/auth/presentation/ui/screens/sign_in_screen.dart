@@ -7,16 +7,16 @@ import 'package:task_manager_ostad/data/models/user_model.dart';
 import 'package:task_manager_ostad/data/service/network_caller.dart';
 import 'package:task_manager_ostad/data/utills/urls.dart';
 import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/sign_up_screen.dart';
-import 'package:task_manager_ostad/ui/screens/forget_password_verify_email_screen.dart';
-import 'package:task_manager_ostad/ui/screens/main_bottom_nav_screen.dart';
-import 'package:task_manager_ostad/ui/utills/app_colors.dart';
-import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
-import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
-import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
+import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/forget_password_verify_email_screen.dart';
+import 'package:task_manager_ostad/feature/dashboard/presentation/ui/main_bottom_nav_screen.dart';
+
 
 import '../../../../../app/app_router.dart';
 import '../../../../../app/service_locator.dart';
+import '../../../../../app/styling/app_colors.dart';
 import '../../../../../core/widgets/responsive_layout.dart';
+import '../../../../common/presentation/widgets/center_circular_progress_indicator.dart';
+import '../../../../common/presentation/widgets/screen_background.dart';
 import '../../../../common/presentation/widgets/snack_message.dart';
 import '../../blocs/log_in_cubit.dart';
 
@@ -32,7 +32,6 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _signInProgress = false;
   late LogInCubit _logInBloc;
 
   @override
@@ -229,12 +228,11 @@ class _SignInScreenState extends State<SignInScreen> {
             TextSpan(
               text: 'Sign up',
               style: const TextStyle(
-                  color: AppColor.themeColor, fontStyle: FontStyle.italic),
+                  color: themeColor, fontStyle: FontStyle.italic),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  // AppRouter.go(context, SignUpScreen.name);
+                  AppRouter.go(context, SignUpScreen.name);
 
-                  // Navigator.pushNamed(context, SignUpScreen.name);
                 },
             ),
           ]),

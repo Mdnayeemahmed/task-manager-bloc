@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:task_manager_ostad/app/service_locator.dart';
-import 'package:task_manager_ostad/ui/screens/add_new_task_list_screen.dart';
-import 'package:task_manager_ostad/ui/screens/forget_password_verify_email_screen.dart';
+import 'package:task_manager_ostad/feature/new_task/presentation/ui/add_new_task_list_screen.dart';
+import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/forget_password_verify_email_screen.dart';
 import 'package:task_manager_ostad/ui/screens/forget_password_verify_otp_screen.dart';
-import 'package:task_manager_ostad/ui/screens/main_bottom_nav_screen.dart';
+import 'package:task_manager_ostad/feature/dashboard/presentation/ui/main_bottom_nav_screen.dart';
 import 'package:task_manager_ostad/ui/screens/reset_password_screen.dart';
 import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/spiash_screen.dart';
-import 'package:task_manager_ostad/ui/screens/update_profile_screen.dart';
+import 'package:task_manager_ostad/feature/profile/presentation/ui/update_profile_screen.dart';
 import 'package:task_manager_ostad/ui/utills/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

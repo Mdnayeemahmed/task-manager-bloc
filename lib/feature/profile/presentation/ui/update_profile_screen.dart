@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager_ostad/data/service/network_caller.dart';
 import 'package:task_manager_ostad/data/utills/urls.dart';
-import 'package:task_manager_ostad/ui/controllers/auth_controller.dart';
-import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
-import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
-import 'package:task_manager_ostad/ui/widgets/tm_app_bar.dart';
-import '../widgets/screen_background.dart';
+
+import '../../../common/presentation/widgets/center_circular_progress_indicator.dart';
+import '../../../common/presentation/widgets/screen_background.dart';
+import '../../../common/presentation/widgets/tm_app_bar.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});

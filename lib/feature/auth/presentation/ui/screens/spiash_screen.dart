@@ -1,40 +1,37 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager_ostad/ui/screens/main_bottom_nav_screen.dart';
-import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
-import '../../../../../ui/widgets/app_logo.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/sign_in_screen.dart';
+import 'package:task_manager_ostad/feature/dashboard/presentation/ui/main_bottom_nav_screen.dart';
+import '../../../../../app/app_router.dart';
+import '../../../../../app/service_locator.dart';
+import '../../../../common/presentation/widgets/app_logo.dart';
+import '../../../../common/presentation/widgets/screen_background.dart';
+import '../../blocs/splash_screen_cubit.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class SplashScreen extends StatelessWidget {
   static const String name = '/';
 
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    moveToNextScreen();
-  }
-
-  Future<void> moveToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 2));
-    bool isUserLoggedIn = await AuthController.isUserLoggedIn();
-    if (isUserLoggedIn) {
-      Navigator.pushReplacementNamed(context, MainBottomNavScreen.name);
-    } else {
-      Navigator.pushReplacementNamed(context, SignInScreen.name);
-    }
-  }
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: ScreenBackground(
-        child: Center(
-          child: AppLogo(),
+    return BlocProvider(
+      create: (context) => SplashCubit(sl())..checkAuthentication(),
+      child: BlocListener<SplashCubit, SplashState>(
+        listener: (context, state) {
+          if (state is SplashAuthenticated) {
+             AppRouter.push(context, MainBottomNavScreen.name);
+            Navigator.pushReplacementNamed(context, MainBottomNavScreen.name);
+          } else if (state is SplashUnauthenticated) {
+            AppRouter.go(context, SignInScreen.name);
+          }
+        },
+        child: const Scaffold(
+          body: ScreenBackground(
+            child: Center(
+              child: AppLogo(),
+            ),
+          ),
         ),
       ),
     );

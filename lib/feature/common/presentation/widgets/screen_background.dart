@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../utills/assets_path.dart';
+import '../../../../app/styling/assets_path.dart';
+
 
 class ScreenBackground extends StatelessWidget {
   const ScreenBackground({super.key, required this.child});

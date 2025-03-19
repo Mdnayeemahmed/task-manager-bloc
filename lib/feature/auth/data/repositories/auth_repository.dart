@@ -9,22 +9,24 @@ import 'auth_local_data_source.dart';
 
 class AuthRepository {
   AuthRepository(
-      this._networkExecutor,
-      this._authLocalDataSource,
-      );
+    this._networkExecutor,
+    this._authLocalDataSource,
+  );
 
   final String _loginUrl = 'login';
-  final String _refreshTokenUrl = 'refresh_token';
+  final String _forgotPasswordUrl = 'RecoverVerifyEmail';
+  final String _verifyOtpUrl = 'RecoverVerifyOTP';
+  final String _resetPassword = 'RecoverResetPass';
 
   final NetworkExecutor _networkExecutor;
   final AuthLocalDataSource _authLocalDataSource;
 
-  Future<Either<Failure, User>>  signIn(
-      String userName, String password) async {
+  Future<Either<Failure, User>> signIn(
+      String userEmail, String password) async {
     final response = await _networkExecutor.postRequest(
       path: _loginUrl,
       data: {
-        'email': userName,
+        'email': userEmail,
         'password': password,
       },
     );
@@ -40,6 +42,75 @@ class AuthRepository {
       );
 
       return Right(user);
+    } else {
+      return Left(ApiFailure.fromJson(response.body).toEntity());
+    }
+  }
+
+  Future<Either<Failure, bool>> resetEmailRequest(String userEmail) async {
+    String url = "$_forgotPasswordUrl/$userEmail";
+
+    final response = await _networkExecutor.getRequest(
+      path: url,
+    );
+    final responseBody = response.body as Map<String, dynamic>;
+    if (responseBody['status'] == 'success') {
+      return const Right(true);
+    } else {
+      return Left(ApiFailure.fromJson(response.body).toEntity());
+    }
+  }
+
+  Future<Either<Failure, bool>> signUp(String userEmail, String firstName,
+      String lastName, String mobile, String password) async {
+    String url = "$_forgotPasswordUrl/$userEmail";
+
+    final response = await _networkExecutor.postRequest(
+      path: url,
+      data: {
+        "email": userEmail,
+        "firstName": firstName,
+        "lastName": lastName,
+        "mobile": mobile,
+        "password": password,
+        "photo": ""
+      },
+    );
+    final responseBody = response.body as Map<String, dynamic>;
+    if (responseBody['status'] == 'success') {
+      return const Right(true);
+    } else {
+      return Left(ApiFailure.fromJson(response.body).toEntity());
+    }
+  }
+
+  Future<Either<Failure, bool>> verifyOtp(String userEmail, String otp) async {
+    String url = "$_verifyOtpUrl/$userEmail/$otp";
+
+    final response = await _networkExecutor.getRequest(
+      path: url,
+    );
+    final responseBody = response.body as Map<String, dynamic>;
+    if (responseBody['status'] == 'success') {
+      return const Right(true);
+    } else {
+      return Left(ApiFailure.fromJson(response.body).toEntity());
+    }
+  }
+
+  Future<Either<Failure, bool>> resetPassword(
+      String userEmail, String otp, String password) async {
+    final response = await _networkExecutor.postRequest(
+      path: _resetPassword,
+      data: {
+        'email': userEmail,
+        'OTP': otp,
+        'password': password,
+      },
+    );
+    final responseBody = response.body as Map<String, dynamic>;
+    if (responseBody['status'] == 'success') {
+      return const Right(true);
     } else {
       return Left(ApiFailure.fromJson(response.body).toEntity());
     }
@@ -62,6 +133,10 @@ class AuthRepository {
 
   Future<String?> getUserAccessToken() {
     return _authLocalDataSource.getUserToken();
+  }
+
+  Future<bool> isUserLogin() {
+    return _authLocalDataSource.isUserLoggedIn();
   }
 
   Future<Map<String, dynamic>?> getUserInformation() {

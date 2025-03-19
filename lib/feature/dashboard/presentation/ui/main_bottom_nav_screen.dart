@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_ostad/ui/screens/cancel_task_list_screen.dart';
-import 'package:task_manager_ostad/ui/screens/complete_task_list_screen.dart';
-import 'package:task_manager_ostad/ui/screens/new_task_list_screen.dart';
-import 'package:task_manager_ostad/ui/screens/progress_task_list_screen.dart';
+
+import '../../../task/cancel_task/presentation/ui/cancel_task_list_screen.dart';
+import '../../../task/complete_task/presentation/ui/complete_task_list_screen.dart';
+import '../../../task/new_task/presentation/ui/new_task_list_screen.dart';
+import '../../../task/progress_task/presentation/ui/progress_task_list_screen.dart';
+
 
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});

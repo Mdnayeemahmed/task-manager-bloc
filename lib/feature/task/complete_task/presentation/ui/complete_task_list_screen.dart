@@ -4,33 +4,32 @@ import 'package:task_manager_ostad/data/models/task_count_model.dart';
 import 'package:task_manager_ostad/data/models/task_list_by_status_model.dart';
 import 'package:task_manager_ostad/data/service/network_caller.dart';
 import 'package:task_manager_ostad/data/utills/urls.dart';
-import 'package:task_manager_ostad/ui/screens/add_new_task_list_screen.dart';
-import 'package:task_manager_ostad/ui/widgets/center_circular_progress_indicator.dart';
-import 'package:task_manager_ostad/ui/widgets/screen_background.dart';
-import 'package:task_manager_ostad/ui/widgets/snack_bar_message.dart';
-import '../widgets/task_card_status_widget.dart';
-import '../widgets/task_item_widget.dart';
-import '../widgets/tm_app_bar.dart';
 
-class ProgressTaskListScreen extends StatefulWidget {
-  const ProgressTaskListScreen({super.key});
+import '../../../common/presentation/widgets/center_circular_progress_indicator.dart';
+import '../../../common/presentation/widgets/screen_background.dart';
+import '../../../common/presentation/widgets/snack_bar_message.dart';
+import '../../../common/presentation/widgets/task_item_widget.dart';
+import '../../../common/presentation/widgets/tm_app_bar.dart';
+
+class CompleteTaskListScreen extends StatefulWidget {
+  const CompleteTaskListScreen({super.key});
 
   @override
-  State<ProgressTaskListScreen> createState() => _ProgressTaskListScreenState();
+  State<CompleteTaskListScreen> createState() => _CompleteTaskListScreenState();
 }
 
-class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
+class _CompleteTaskListScreenState extends State<CompleteTaskListScreen> {
   bool _getTaskCountByStatusInProgress = false;
-  bool _getProgressTaskListInProgress = false;
+  bool _getCompleteTaskListInProgress = false;
   TaskCountByStatusModel? taskCountByStatusModel;
-  TaskListByStatusModel? progressTaskListModel;
+  TaskListByStatusModel? completeTaskListModel;
 
   @override
   void initState() {
     super.initState();
     _fetchAllData();
     // _getTaskCountByStatus();
-    // _getProgressTaskList();
+    // _getCompleteTaskList();
   }
 
   @override
@@ -45,7 +44,7 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Visibility(
-                    visible: _getProgressTaskListInProgress == false,
+                    visible: _getCompleteTaskListInProgress == false,
                     replacement: const CenterCircularProgressIndicator(),
                     child: _buildTaskListView()),
               ),
@@ -90,10 +89,10 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
     return ListView.builder(
         shrinkWrap: true,
         primary: false,
-        itemCount: progressTaskListModel?.taskList?.length ?? 0,
+        itemCount: completeTaskListModel?.taskList?.length ?? 0,
         itemBuilder: (context, index) {
           return TaskItems(
-            taskModel: progressTaskListModel!.taskList![index],
+            taskModel: completeTaskListModel!.taskList![index],
             onDeleteTask: _deleteTask,
             onUpdateTaskStatus: _updateTaskStatus,
           );
@@ -103,7 +102,7 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
   Future<void> _fetchAllData() async {
     try {
       await _getTaskCountByStatus();
-      await _getProgressTaskList();
+      await _getCompleteTaskList();
     } catch (e) {
       showSnackBarMessage(context, e.toString());
     }
@@ -148,18 +147,18 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
     setState(() {});
   }
 
-  Future<void> _getProgressTaskList() async {
-    _getProgressTaskListInProgress = true;
+  Future<void> _getCompleteTaskList() async {
+    _getCompleteTaskListInProgress = true;
     setState(() {});
     final NetworkResponse response = await NetworkCaller.getRequest(
-        url: Urls.taskListByStatusUrl('Progress'));
+        url: Urls.taskListByStatusUrl('Completed'));
     if (response.isSuccess) {
-      progressTaskListModel =
+      completeTaskListModel =
           TaskListByStatusModel.fromJson(response.responseData!);
     } else {
       showSnackBarMessage(context, response.errorMessage);
     }
-    _getProgressTaskListInProgress = false;
+    _getCompleteTaskListInProgress = false;
     setState(() {});
   }
 }

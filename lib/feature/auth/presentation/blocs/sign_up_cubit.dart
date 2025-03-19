@@ -8,21 +8,28 @@ part 'sign_up_state.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {
   final AuthRepository authRepository;
-  final GlobalAuthCubit authCubit;
 
-  SignUpCubit(this.authRepository, this.authCubit) : super(SignUpInitialState());
+  SignUpCubit(this.authRepository) : super(SignUpInitialState());
 
-  Future<void> userSignUp({required String userName, required String password}) async {
+
+  Future<void> userSignUp({required String userEmail,required String firstName,required String lastName,required String mobile, required String password}) async {
     emit(SignUpLoadingState());
-    final response = await authRepository.signIn(userName, password);
-    await response.fold(
-          (error) {
-        emit(SignUpFailureState(error.message));
+
+    final result = await authRepository.signUp(userEmail,firstName,lastName,mobile,password);
+
+    result.fold(
+          (failure) {
+        emit(SignUpFailureState(failure.message));
       },
-          (loginData) async {
-        await authCubit.initialize();
-        emit(SignUpSuccessState(loginData));
+          (success) {
+        if (success) {
+          emit(const SignUpSuccessState());
+        } else {
+          emit(const SignUpFailureState('Sign Up  failed.'));
+        }
       },
     );
   }
+
+
 }

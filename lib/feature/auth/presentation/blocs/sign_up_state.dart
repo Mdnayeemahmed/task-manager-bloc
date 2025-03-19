@@ -21,10 +21,7 @@ class SignUpFailureState extends SignUpState {
 }
 
 class SignUpSuccessState extends SignUpState {
-  const SignUpSuccessState(this.userData);
-
-  final User userData;
-
+  const SignUpSuccessState();
   @override
-  List<Object> get props => [userData];
+  List<Object> get props => [];
 }
