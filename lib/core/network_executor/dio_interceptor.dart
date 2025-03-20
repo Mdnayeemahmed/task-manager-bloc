@@ -14,7 +14,8 @@ class DioInterceptor extends Interceptor {
     options.data ??= <String, dynamic>{};
     if (GlobalAuthCubit.accessToken.isNotEmpty) {
       options.headers.addAll({
-        'Authorization': 'Bearer ${GlobalAuthCubit.accessToken}',
+        // 'Authorization': 'Bearer ${GlobalAuthCubit.accessToken}',
+        'token': GlobalAuthCubit.accessToken,
       });
     }
     options.validateStatus = (status) {

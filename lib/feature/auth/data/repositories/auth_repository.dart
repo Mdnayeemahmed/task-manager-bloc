@@ -17,6 +17,7 @@ class AuthRepository {
   final String _forgotPasswordUrl = 'RecoverVerifyEmail';
   final String _verifyOtpUrl = 'RecoverVerifyOTP';
   final String _resetPassword = 'RecoverResetPass';
+  final String _updateProfileUrl = 'ProfileUpdate';
 
   final NetworkExecutor _networkExecutor;
   final AuthLocalDataSource _authLocalDataSource;
@@ -110,6 +111,45 @@ class AuthRepository {
     );
     final responseBody = response.body as Map<String, dynamic>;
     if (responseBody['status'] == 'success') {
+      return const Right(true);
+    } else {
+      return Left(ApiFailure.fromJson(response.body).toEntity());
+    }
+  }
+
+  Future<Either<Failure, bool>> updateProfile({
+    required String email,
+    required String firstName,
+    required String lastName,
+    required String mobile,
+    String? password,
+    String? photo, // base64 encoded image string if available
+  }) async {
+    // Build the request data
+    final Map<String, dynamic> requestBody = {
+      "email": email.trim(),
+      "firstName": firstName.trim(),
+      "lastName": lastName.trim(),
+      "mobile": mobile.trim(),
+    };
+
+    if (photo != null && photo.isNotEmpty) {
+      requestBody['photo'] = photo;
+    }
+
+    if (password != null && password.isNotEmpty) {
+      requestBody['password'] = password;
+    }
+
+    final response = await _networkExecutor.postRequest(
+      path: _updateProfileUrl,
+      data: requestBody,
+    );
+
+    final responseBody = response.body as Map<String, dynamic>;
+    if (responseBody['status'] == 'success') {
+      // Optionally, update the local user data if necessary
+      // For example, re-save the user info locally if it is returned
       return const Right(true);
     } else {
       return Left(ApiFailure.fromJson(response.body).toEntity());

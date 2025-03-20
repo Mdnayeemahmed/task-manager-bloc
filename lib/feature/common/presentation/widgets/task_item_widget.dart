@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../data/models/task_list_model.dart';
+import '../../../task/domain/entities/task_entity.dart';
 
 class TaskItems extends StatelessWidget {
   const TaskItems({
@@ -10,11 +11,10 @@ class TaskItems extends StatelessWidget {
     required this.onUpdateTaskStatus,
   });
 
-  final TaskListModel taskModel;
-
+  final TaskEntity taskModel;
   final Future<void> Function(String id) onDeleteTask;
-  final Future<void> Function(String id, String status)
-      onUpdateTaskStatus;
+  final Future<void> Function(String id, String status) onUpdateTaskStatus;
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -50,16 +50,13 @@ class TaskItems extends StatelessWidget {
         tileColor: Colors.white,
         title: Text(
           taskModel.title ?? '',
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              taskModel.description ?? '',
-            ),
-            Text(
-              'Date:${taskModel.createdDate ?? ''}',
-            ),
+            Text(taskModel.description ?? ''),
+            Text('Date: ${taskModel.createdDate ?? ''}'),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -71,62 +68,63 @@ class TaskItems extends StatelessWidget {
                   ),
                   child: Text(
                     statusText,
-                    style: textTheme.titleSmall?.copyWith(color: Colors.white),
+                    style: textTheme.bodyMedium?.copyWith(color: Colors.white),
                   ),
                 ),
-                Row(children: [
-                  IconButton(
-                    onPressed: () async {
-                      final String? newStatus = await _showEditStatusDialog(
-                        context,
-                        taskModel.status ?? '',
-                      );
-                      if (newStatus != null && newStatus != taskModel.status) {
-                        await onUpdateTaskStatus(
-                            taskModel.sId ?? '', newStatus);
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.edit,
-                      color: Colors.cyan,
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        final String? newStatus = await _showEditStatusDialog(
+                          context,
+                          taskModel.status ?? '',
+                        );
+                        if (newStatus != null && newStatus != taskModel.status) {
+                          await onUpdateTaskStatus(taskModel.id ?? '', newStatus);
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.cyan,
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      final bool? confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Are you sure?'),
-                            content: const Text('Do you want to delete?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context, false);
-                                },
-                                child: const Text('No'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context, true);
-                                },
-                                child: const Text('Yes'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                    IconButton(
+                      onPressed: () async {
+                        final bool? confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Are you sure?'),
+                              content: const Text('Do you want to delete?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text('No'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, true);
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
 
-                      if (confirm == true) {
-                        await onDeleteTask(taskModel.sId ?? '');
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
+                        if (confirm == true) {
+                          await onDeleteTask(taskModel.id ?? '');
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
                     ),
-                  ),
-                ])
+                  ],
+                )
               ],
             ),
           ],
@@ -135,9 +133,8 @@ class TaskItems extends StatelessWidget {
     );
   }
 
-  Future<String?> _showEditStatusDialog(
-      BuildContext context, String currentStatus) async {
-    return showDialog(
+  Future<String?> _showEditStatusDialog(BuildContext context, String currentStatus) async {
+    return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         String? selectedStatus = currentStatus;
