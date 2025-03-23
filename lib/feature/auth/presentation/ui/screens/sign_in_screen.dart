@@ -121,8 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           children: [
                             TextButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context,
-                                      ForgetPasswordVerifyEmailScreen.name);
+                                  AppRouter.navigateTo(context, ForgetPasswordVerifyEmailScreen.name);
                                 },
                                 child: const Text(
                                   'Forget Password ?',
@@ -231,7 +230,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   color: themeColor, fontStyle: FontStyle.italic),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  AppRouter.go(context, SignUpScreen.name);
+                  AppRouter.navigateTo(context, SignUpScreen.name);
+
+                  // AppRouter.go(context, SignUpScreen.name);
 
                 },
             ),

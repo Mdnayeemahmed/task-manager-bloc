@@ -5,6 +5,8 @@ import 'package:task_manager_ostad/app/router_error_screen.dart';
 import '../feature/auth/presentation/auth_routes.dart';
 import '../feature/auth/presentation/ui/screens/spiash_screen.dart';
 import '../feature/common/presentation/screen/theme_demo_screen.dart';
+import '../feature/dashboard/dashboard_routes.dart';
+import '../feature/task/presentation/task_routes.dart';
 
 
 class AppRouter {
@@ -25,7 +27,8 @@ class AppRouter {
             return const ThemeDemoScreen();
           }),
       ...AuthRoutes.routes,
-      // ...MainMenuRoutes.routes,
+       ...TaskRoutes.routes,
+       ...DashboardRoutes.routes,
       // ...DashboardRoutes.routes,
     ],
     errorBuilder: (context, state) {
@@ -52,6 +55,18 @@ class AppRouter {
         Map<String, dynamic> queryParameters = const <String, dynamic>{},
         Object? extra}) {
     context.replaceNamed(
+      name,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+      extra: extra,
+    );
+  }
+
+  static void navigateTo(BuildContext context, String name,
+      {Map<String, String> pathParameters = const <String, String>{},
+        Map<String, dynamic> queryParameters = const <String, dynamic>{},
+        Object? extra}) {
+    context.pushNamed(
       name,
       pathParameters: pathParameters,
       queryParameters: queryParameters,

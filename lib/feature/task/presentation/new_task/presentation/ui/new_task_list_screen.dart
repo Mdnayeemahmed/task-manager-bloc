@@ -18,6 +18,8 @@ import '../blocs/new_task_cubit.dart';
 
 
 class NewTaskListScreen extends StatelessWidget {
+  static const String name = '/new-task';
+
   const NewTaskListScreen({super.key});
 
   @override

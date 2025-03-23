@@ -20,8 +20,7 @@ class SplashScreen extends StatelessWidget {
       child: BlocListener<SplashCubit, SplashState>(
         listener: (context, state) {
           if (state is SplashAuthenticated) {
-             AppRouter.push(context, MainBottomNavScreen.name);
-            Navigator.pushReplacementNamed(context, MainBottomNavScreen.name);
+             AppRouter.replace(context, MainBottomNavScreen.name);
           } else if (state is SplashUnauthenticated) {
             AppRouter.go(context, SignInScreen.name);
           }

@@ -15,6 +15,8 @@ import '../../../add_task/presentation/ui/add_new_task_list_screen.dart';
 import '../blocs/cancel_task_cubit.dart';
 
 class CancelTaskListScreen extends StatelessWidget {
+  static const String name = '/cancel-task';
+
   const CancelTaskListScreen({super.key});
 
   @override

@@ -20,6 +20,8 @@ import '../blocs/complete_task_cubit.dart';
 
 
 class CompleteTaskListScreen extends StatelessWidget {
+  static const String name = '/complete-task';
+
   const CompleteTaskListScreen({super.key});
 
   @override
