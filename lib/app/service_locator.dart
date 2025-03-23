@@ -8,7 +8,7 @@ import 'package:task_manager_ostad/feature/auth/presentation/blocs/splash_screen
 import 'package:task_manager_ostad/feature/task/presentation/add_task/presentation/blocs/add_new_task_cubit.dart';
 import 'package:task_manager_ostad/feature/task/presentation/cancel_task/presentation/blocs/cancel_task_cubit.dart';
 import 'package:task_manager_ostad/feature/task/presentation/complete_task/presentation/blocs/complete_task_cubit.dart';
-import 'package:task_manager_ostad/feature/task/presentation/new_task/presentation/blocs/new_task_cubit.dart';
+import 'package:task_manager_ostad/feature/task/presentation/new_task/presentation/blocs/add_new_task_cubit.dart';
 
 import '../core/network_executor/dio_set_up.dart';
 import '../core/network_executor/network_executor.dart';
@@ -37,6 +37,9 @@ class ServiceLocator {
       )
       ..registerLazySingleton(
             () => AuthRepository(sl<NetworkExecutor>(),sl<AuthLocalDataSource>()),
+      )
+      ..registerLazySingleton(
+            () => TaskRepository(sl<NetworkExecutor>()),
       )
       ..registerLazySingleton(
             () => ProgressTaskCubit(sl<TaskRepository>()),
@@ -70,7 +73,7 @@ class ServiceLocator {
             () => ResetPasswordCubit(sl<AuthRepository>()),
       )
       ..registerLazySingleton(
-            () => SplashCubit(sl<AuthRepository>()),
+            () => SplashCubit(sl<AuthRepository>(),sl<GlobalAuthCubit>()),
       )
       ..registerLazySingleton(
             () => SignUpCubit(sl<AuthRepository>()),

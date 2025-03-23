@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:task_manager_ostad/app/app_router.dart';
 import '../../../../app/styling/app_colors.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager_ostad/feature/auth/data/models/user_model.dart';
 
 import '../../../auth/presentation/ui/screens/sign_in_screen.dart';
-import '../blocs/auth_cubit.dart';
+import '../blocs/user_management_cubit.dart';
 
 class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   const TMAppBar({Key? key, this.fromUpdateProfile = false}) : super(key: key);
@@ -18,7 +19,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       backgroundColor: themeColor,
-      title: BlocBuilder<AuthCubit, AuthState>(
+      title: BlocBuilder<UserManagementCubit, UserManagementState>(
         builder: (context, state) {
           final UserModel? user = state.user;
           return Row(
@@ -57,9 +58,8 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               IconButton(
                 onPressed: () async {
-                  await context.read<AuthCubit>().logout();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, SignInScreen.name, (predicate) => false);
+                  await context.read<UserManagementCubit>().logout();
+                  AppRouter.go(context, SignInScreen.name);
                 },
                 icon: const Icon(
                   Icons.logout,

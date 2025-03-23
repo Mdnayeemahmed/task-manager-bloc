@@ -45,12 +45,6 @@ class CancelTaskListScreen extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, AddNewTaskListScreen.name);
-        },
-        child: const Icon(Icons.add),
-      ),
     );
   }
 
@@ -58,7 +52,7 @@ class CancelTaskListScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: SizedBox(
-        height: 70,
+        height: 150,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: taskCountData.taskByStatusList?.length ?? 0,
@@ -66,7 +60,8 @@ class CancelTaskListScreen extends StatelessWidget {
             final model = taskCountData.taskByStatusList![index];
             return TaskCardStatusWidget(
               title: model.id ?? '',
-              count: model.sum.toString(),
+              count: model.sum.toString(), status:  getTaskStatusFromString(model.id),
+
             );
           },
         ),

@@ -50,7 +50,7 @@ class ProgressTaskListScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: SizedBox(
-        height: 70,
+        height: 150,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: taskCountData.taskByStatusList?.length ?? 0,
@@ -58,7 +58,8 @@ class ProgressTaskListScreen extends StatelessWidget {
             final model = taskCountData.taskByStatusList![index];
             return TaskCardStatusWidget(
               title: model.id ?? '',
-              count: model.sum.toString(),
+              count: model.sum.toString(), status:  getTaskStatusFromString(model.id),
+
             );
           },
         ),

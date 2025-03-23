@@ -4,6 +4,7 @@ import 'package:task_manager_ostad/app/service_locator.dart';
 // import 'package:task_manager_ostad/feature/new_task/presentation/ui/add_new_task_list_screen.dart';
 import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/forget_password_verify_email_screen.dart';
 import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/sign_in_screen.dart';
+import 'package:task_manager_ostad/feature/common/presentation/blocs/user_management_cubit.dart';
 // import 'package:task_manager_ostad/ui/screens/forget_password_verify_otp_screen.dart';
 import 'package:task_manager_ostad/feature/dashboard/presentation/ui/main_bottom_nav_screen.dart';
 // import 'package:task_manager_ostad/ui/screens/reset_password_screen.dart';
@@ -212,6 +213,7 @@ class _TaskManagerState extends State<TaskManager> {
         BlocProvider.value(value: _languageSelectorCubit),
         BlocProvider.value(value: _themeSelectorCubit),
         BlocProvider(create: (_) => GlobalAuthCubit(sl())),
+        BlocProvider(create: (_) => UserManagementCubit(sl())),
       ],
       child: BlocListener<GlobalAuthCubit, AuthState>(
         listener: (context, state) {

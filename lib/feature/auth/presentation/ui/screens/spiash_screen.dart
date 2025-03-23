@@ -16,7 +16,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SplashCubit(sl())..checkAuthentication(),
+      create: (context) => SplashCubit(sl(),sl())..checkAuthentication(),
       child: BlocListener<SplashCubit, SplashState>(
         listener: (context, state) {
           if (state is SplashAuthenticated) {

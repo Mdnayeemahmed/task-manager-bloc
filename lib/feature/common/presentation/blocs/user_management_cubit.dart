@@ -4,12 +4,12 @@ import 'package:task_manager_ostad/feature/auth/data/models/user_model.dart';
 
 import '../../../auth/data/repositories/auth_local_data_source.dart';
 
-part 'auth_state.dart';
+part 'user_management_state.dart';
 
-class AuthCubit extends Cubit<AuthState> {
+class UserManagementCubit extends Cubit<UserManagementState> {
   final AuthLocalDataSource _authLocalDataSource;
 
-  AuthCubit(this._authLocalDataSource) : super(const AuthState());
+  UserManagementCubit(this._authLocalDataSource) : super(const UserManagementState());
 
   /// Load user information from local storage
   Future<void> loadUser() async {

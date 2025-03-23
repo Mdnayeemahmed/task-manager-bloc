@@ -18,18 +18,36 @@ import '../../../../domain/entities/task_list_by_status_entity.dart';
 import '../blocs/complete_task_cubit.dart';
 
 
-
-class CompleteTaskListScreen extends StatelessWidget {
+class CompleteTaskListScreen extends StatefulWidget {
   static const String name = '/complete-task';
 
   const CompleteTaskListScreen({super.key});
 
   @override
+  State<CompleteTaskListScreen> createState() => _CompleteTaskListScreenState();
+}
+
+class _CompleteTaskListScreenState extends State<CompleteTaskListScreen> {
+  late CompleteTaskCubit _completeTaskCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _completeTaskCubit = CompleteTaskCubit(sl());
+    _completeTaskCubit.fetchAllData();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const TMAppBar(),
-      body: BlocProvider(
-        create: (_) => CompleteTaskCubit(TaskRepository(sl()))..fetchAllData(),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => _completeTaskCubit,
+          ),
+        ],
         child: BlocBuilder<CompleteTaskCubit, CompleteTaskState>(
           builder: (context, state) {
             if (state is CompleteTaskLoadingState) {
@@ -57,7 +75,7 @@ class CompleteTaskListScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: SizedBox(
-        height: 70,
+        height: 150,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: taskCountData.taskByStatusList?.length ?? 0,
@@ -65,7 +83,8 @@ class CompleteTaskListScreen extends StatelessWidget {
             final model = taskCountData.taskByStatusList![index];
             return TaskCardStatusWidget(
               title: model.id ?? '',
-              count: model.sum.toString(),
+              count: model.sum.toString(), status:  getTaskStatusFromString(model.id),
+
             );
           },
         ),
@@ -73,7 +92,8 @@ class CompleteTaskListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTaskListView(TaskListByStatusEntity taskListData, BuildContext context) {
+  Widget _buildTaskListView(TaskListByStatusEntity taskListData,
+      BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
@@ -88,7 +108,8 @@ class CompleteTaskListScreen extends StatelessWidget {
           },
           onUpdateTaskStatus: (id, status) async {
             // Await the async update task status operation
-            await context.read<CompleteTaskCubit>().updateTaskStatus(id, status);
+            await context.read<CompleteTaskCubit>().updateTaskStatus(
+                id, status);
             showSnackBarMessage(context, 'Task status updated successfully');
           },
         );

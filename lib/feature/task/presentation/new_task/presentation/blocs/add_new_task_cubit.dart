@@ -8,7 +8,7 @@ import '../../../../data/repositories/task_repository.dart';
 import '../../../../domain/entities/task_count_by_status_entity.dart';
 import '../../../../domain/entities/task_list_by_status_entity.dart';
 
-part 'new_task_state.dart';
+part 'add_new_task_state.dart';
 
 class NewTaskCubit extends Cubit<NewTaskState> {
   final TaskRepository taskRepository;

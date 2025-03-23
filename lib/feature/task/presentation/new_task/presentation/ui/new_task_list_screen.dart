@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_manager_ostad/app/app_router.dart';
 import 'package:task_manager_ostad/data/models/task_count_by_status_model.dart';
 import 'package:task_manager_ostad/data/models/task_count_model.dart';
 import 'package:task_manager_ostad/data/models/task_list_by_status_model.dart';
@@ -14,7 +15,8 @@ import '../../../../../common/presentation/widgets/tm_app_bar.dart';
 import '../../../../data/repositories/task_repository.dart';
 import '../../../../domain/entities/task_count_by_status_entity.dart';
 import '../../../../domain/entities/task_list_by_status_entity.dart';
-import '../blocs/new_task_cubit.dart';
+import '../../../add_task/presentation/ui/add_new_task_list_screen.dart';
+import '../blocs/add_new_task_cubit.dart';
 
 
 class NewTaskListScreen extends StatelessWidget {
@@ -48,6 +50,13 @@ class NewTaskListScreen extends StatelessWidget {
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          AppRouter.navigateTo(context, AddNewTaskListScreen.name);
+        },
+        child: const Icon(Icons.add),
+      ),
+
     );
   }
 
@@ -55,15 +64,16 @@ class NewTaskListScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: SizedBox(
-        height: 70,
+        height: 150,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: taskCountData.taskByStatusList?.length ?? 0,
           itemBuilder: (context, index) {
             final model = taskCountData.taskByStatusList![index];
             return TaskCardStatusWidget(
-              title: model.id ?? '',
-              count: model.sum.toString(),
+                title: model.id ?? '',
+                count: model.sum.toString(), status:  getTaskStatusFromString(model.id),
+
             );
           },
         ),
