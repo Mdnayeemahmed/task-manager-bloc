@@ -262,3 +262,244 @@
 //     super.dispose();
 //   }
 // }
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+
+
+import '../../../../app/app_router.dart';
+import '../../../../app/service_locator.dart';
+import '../../../auth/data/repositories/auth_repository.dart';
+import '../../../common/presentation/widgets/center_circular_progress_indicator.dart';
+import '../../../common/presentation/widgets/snack_bar_message.dart';
+import '../../../common/presentation/widgets/tm_app_bar.dart';
+import '../blocs/update_profile_cubit.dart';
+import 'dart:typed_data';  // Add this import for Uint8List
+
+import 'dart:convert';
+import 'dart:typed_data';  // Add this import for Uint8List
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../../app/service_locator.dart';
+import '../../../auth/data/repositories/auth_repository.dart';
+import '../../../common/presentation/widgets/center_circular_progress_indicator.dart';
+import '../../../common/presentation/widgets/snack_bar_message.dart';
+import '../../../common/presentation/widgets/tm_app_bar.dart';
+import '../blocs/update_profile_cubit.dart';
+
+class UpdateProfileScreen extends StatefulWidget {
+  static const String name = '/update-profile';
+
+  const UpdateProfileScreen({super.key});
+
+  @override
+  State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
+}
+
+class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+  XFile? _pickedImage;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  late ProfileCubit _profileTaskBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileTaskBloc = ProfileCubit(sl(),sl());
+    _profileTaskBloc.loadUserProfile();
+  }
+
+  Widget _buildTextField(TextEditingController controller, String hintText, bool isRequired,
+      {bool isNumber = false, bool obscureText = false}) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      decoration: InputDecoration(
+        hintText: hintText,
+      ),
+      validator: isRequired
+          ? (value) {
+        if (value?.trim().isEmpty ?? true) {
+          return 'Please enter your $hintText';
+        }
+        return null;
+      }
+          : null,
+    );
+  }
+
+  Widget _buildPhotoPicker() {
+    return GestureDetector(
+      onTap: _pickImage,
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 75,
+              width: 75,
+              decoration: const BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
+              ),
+              child: _pickedImage != null
+                  ? ClipRRect(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
+                child: Image.file(
+                  File(_pickedImage!.path),
+                  fit: BoxFit.cover,
+                ),
+              )
+                  : const Center(
+                child: Text('Photos', style: TextStyle(color: Colors.white)),
+              ),
+            ),
+            const SizedBox(width: 48),
+            Text(_pickedImage != null ? 'Selected' : 'No selected item'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickImage() async {
+    ImagePicker picker = ImagePicker();
+    XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      _pickedImage = image;
+      setState(() {});
+    }
+  }
+
+  Future<void> _onTapUpdateProfile(BuildContext context, String email, String firstName, String lastName, String mobile) async {
+    if (_formKey.currentState!.validate()) {
+      String? photo;
+      if (_pickedImage != null) {
+        // Use await to read the image bytes asynchronously
+        Uint8List imageBytes = await _pickedImage!.readAsBytes();  // Change to Uint8List
+        photo = base64Encode(imageBytes);
+      }
+
+      context.read<ProfileCubit>().updateProfile(
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        mobile: mobile,
+        photo: photo, // Handle photo logic if needed
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Scaffold(
+      appBar: const TMAppBar(
+        fromUpdateProfile: true,
+      ),
+      body: MultiBlocProvider(
+  providers: [
+    BlocProvider(
+        create: (context) => _profileTaskBloc,
+),
+  ],
+  child: BlocListener<ProfileCubit, ProfileState>(
+          listener: (context, state) {
+            debugPrint('Current state: $state'); // Add this line to debug the state
+
+            if (state is ProfileUpdateFailure) {
+
+              // Show an error message when update fails
+              showSnackBarMessage(context, state.failure.message);
+            }
+            if (state is ProfileUpdateSuccess) {
+              // Show success message and handle post-success actions
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {  // Always check if the widget is still mounted before calling Navigator.pop
+                  // Navigator.pop(context);
+                  AppRouter.pop(context,result: true);
+                }
+              });
+              showSnackBarMessage(context, 'Profile updated successfully!');
+            }
+          },
+    child: BlocBuilder<ProfileCubit, ProfileState>(
+
+    builder: (context, state) {
+            if (state is ProfileLoadInProgress) {
+              return const CenterCircularProgressIndicator();
+            }
+
+            if (state is ProfileLoadFailure) {
+              return Center(child: Text('Failed to load profile: ${state.failure.message}'));
+            }
+
+            if (state is ProfileLoaded) {
+              final user = state.user;
+              log(state.user.toString());
+              final _emailTEController = TextEditingController(text: user.email);
+              final _firstNameTEController = TextEditingController(text: user.firstName);
+              final _lastNameTEController = TextEditingController(text: user.lastName);
+              final _mobileTEController = TextEditingController(text: user.mobile);
+
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Form(
+                    key: _formKey,  // Use the existing form key
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 25),
+                        Text('Update Profile', style: textTheme.titleLarge),
+                        const SizedBox(height: 24),
+                        _buildPhotoPicker(),
+                        const SizedBox(height: 8),
+                        _buildTextField(_emailTEController, 'Email', false),
+                        const SizedBox(height: 8),
+                        _buildTextField(_firstNameTEController, 'First Name', true),
+                        const SizedBox(height: 8),
+                        _buildTextField(_lastNameTEController, 'Last Name', true),
+                        const SizedBox(height: 8),
+                        _buildTextField(_mobileTEController, 'Mobile', true, isNumber: true),
+                        const SizedBox(height: 8),
+                        _buildTextField(TextEditingController(), 'Password', true, obscureText: true),
+                        const SizedBox(height: 16),
+                        state is ProfileUpdateInProgress
+                            ? const CenterCircularProgressIndicator()
+                            : ElevatedButton(
+                          onPressed: () {
+                            _onTapUpdateProfile(context, _emailTEController.text, _firstNameTEController.text, _lastNameTEController.text, _mobileTEController.text);
+                          },
+                          child: const Icon(Icons.arrow_circle_right_outlined),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            return Container(); // Return empty container or loading state if not loaded yet
+          },
+        ),
+),
+    ));
+  }
+}
+
+

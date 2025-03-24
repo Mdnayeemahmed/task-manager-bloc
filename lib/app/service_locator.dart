@@ -5,6 +5,7 @@ import 'package:task_manager_ostad/feature/auth/presentation/blocs/otp_verify_cu
 import 'package:task_manager_ostad/feature/auth/presentation/blocs/reset_password_cubit.dart';
 import 'package:task_manager_ostad/feature/auth/presentation/blocs/sign_up_cubit.dart';
 import 'package:task_manager_ostad/feature/auth/presentation/blocs/splash_screen_cubit.dart';
+import 'package:task_manager_ostad/feature/profile/presentation/blocs/update_profile_cubit.dart';
 import 'package:task_manager_ostad/feature/task/presentation/add_task/presentation/blocs/add_new_task_cubit.dart';
 import 'package:task_manager_ostad/feature/task/presentation/cancel_task/presentation/blocs/cancel_task_cubit.dart';
 import 'package:task_manager_ostad/feature/task/presentation/complete_task/presentation/blocs/complete_task_cubit.dart';
@@ -40,6 +41,9 @@ class ServiceLocator {
       )
       ..registerLazySingleton(
             () => TaskRepository(sl<NetworkExecutor>()),
+      )
+      ..registerLazySingleton(
+            () => ProfileCubit(sl<AuthRepository>(),sl<AuthLocalDataSource>()),
       )
       ..registerLazySingleton(
             () => ProgressTaskCubit(sl<TaskRepository>()),

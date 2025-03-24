@@ -213,7 +213,7 @@ class _TaskManagerState extends State<TaskManager> {
         BlocProvider.value(value: _languageSelectorCubit),
         BlocProvider.value(value: _themeSelectorCubit),
         BlocProvider(create: (_) => GlobalAuthCubit(sl())),
-        BlocProvider(create: (_) => UserManagementCubit(sl())),
+        // BlocProvider(create: (_) => UserManagementCubit(sl())),
       ],
       child: BlocListener<GlobalAuthCubit, AuthState>(
         listener: (context, state) {

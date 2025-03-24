@@ -6,6 +6,7 @@ import '../feature/auth/presentation/auth_routes.dart';
 import '../feature/auth/presentation/ui/screens/spiash_screen.dart';
 import '../feature/common/presentation/screen/theme_demo_screen.dart';
 import '../feature/dashboard/dashboard_routes.dart';
+import '../feature/profile/profile_routes.dart';
 import '../feature/task/presentation/task_routes.dart';
 
 
@@ -29,6 +30,7 @@ class AppRouter {
       ...AuthRoutes.routes,
        ...TaskRoutes.routes,
        ...DashboardRoutes.routes,
+       ...ProfileRoutes.routes,
       // ...DashboardRoutes.routes,
     ],
     errorBuilder: (context, state) {

@@ -4,6 +4,7 @@ import 'package:task_manager_ostad/feature/auth/domain/entites/user.dart';
 import '../../../../core/domain/data/model/api_failure.dart';
 import '../../../../core/domain/domain.dart';
 import '../../../../core/network_executor/network_executor.dart';
+import '../models/get_profile_response.dart';
 import '../models/login_response_model.dart';
 import 'auth_local_data_source.dart';
 
@@ -14,6 +15,7 @@ class AuthRepository {
   );
 
   final String _loginUrl = 'login';
+  final String _getProfileInformation = 'ProfileDetails';
   final String _forgotPasswordUrl = 'RecoverVerifyEmail';
   final String _verifyOtpUrl = 'RecoverVerifyOTP';
   final String _resetPassword = 'RecoverResetPass';
@@ -148,9 +150,31 @@ class AuthRepository {
 
     final responseBody = response.body as Map<String, dynamic>;
     if (responseBody['status'] == 'success') {
+      getProfileInfomation();
       // Optionally, update the local user data if necessary
       // For example, re-save the user info locally if it is returned
       return const Right(true);
+    } else {
+      return Left(ApiFailure.fromJson(response.body).toEntity());
+    }
+  }
+
+  Future<Either<Failure, User>> getProfileInfomation() async {
+    final response = await _networkExecutor.getRequest(
+      path: _getProfileInformation,
+    );
+    final responseBody = response.body as Map<String, dynamic>;
+    if (responseBody['status'] == 'success') {
+      final loginResponse = GetProfileResponseModel.fromJson(responseBody);
+      final user = loginResponse.user.toEntity();
+
+      // ✅ Save token & user data locally
+      await _authLocalDataSource.saveUserModel(
+        loginResponse.user,
+      );
+      _authLocalDataSource.getUserInformation();
+
+      return Right(user);
     } else {
       return Left(ApiFailure.fromJson(response.body).toEntity());
     }

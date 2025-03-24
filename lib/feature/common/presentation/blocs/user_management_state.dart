@@ -1,18 +1,33 @@
 part of 'user_management_cubit.dart';
 
-class UserManagementState extends Equatable {
-  final UserModel? user;
+// class UserManagementState extends Equatable {
+//   final UserModel? user;
+//
+//   const UserManagementState({this.user});
+//
+//   const UserManagementState.initial() : user = null;
+//
+//   UserManagementState copyWith({UserModel? user}) {
+//     return UserManagementState(
+//       user: user ?? this.user,
+//     );
+//   }
+//
+//   @override
+//   List<Object?> get props => [user];
+// }
+abstract class UserManagementState {}
 
-  const UserManagementState({this.user});
+class userProfileInitial extends UserManagementState {}
 
-  const UserManagementState.initial() : user = null;
+class userProfileLoadInProgress extends UserManagementState {}
 
-  UserManagementState copyWith({UserModel? user}) {
-    return UserManagementState(
-      user: user ?? this.user,
-    );
-  }
+class userProfileLoaded extends UserManagementState {
+  final User user;
+  userProfileLoaded(this.user);
 
-  @override
-  List<Object?> get props => [user];
+}
+class userProfileLoadFailureFromLocal extends UserManagementState {
+  final String? failure;
+  userProfileLoadFailureFromLocal(this.failure);
 }
