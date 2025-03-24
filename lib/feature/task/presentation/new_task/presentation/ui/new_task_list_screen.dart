@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager_ostad/app/app_router.dart';
-import 'package:task_manager_ostad/data/models/task_count_by_status_model.dart';
-import 'package:task_manager_ostad/data/models/task_count_model.dart';
-import 'package:task_manager_ostad/data/models/task_list_by_status_model.dart';
-import 'package:task_manager_ostad/data/service/network_caller.dart';
-import 'package:task_manager_ostad/data/utills/urls.dart';
 import '../../../../../../app/service_locator.dart';
 import '../../../../../common/presentation/widgets/center_circular_progress_indicator.dart';
 import '../../../../../common/presentation/widgets/snack_bar_message.dart';
@@ -18,45 +13,91 @@ import '../../../../domain/entities/task_list_by_status_entity.dart';
 import '../../../add_task/presentation/ui/add_new_task_list_screen.dart';
 import '../blocs/add_new_task_cubit.dart';
 
-
-class NewTaskListScreen extends StatelessWidget {
+class NewTaskListScreen extends StatefulWidget {
   static const String name = '/new-task';
 
   const NewTaskListScreen({super.key});
 
   @override
+  State<NewTaskListScreen> createState() => _NewTaskListScreenState();
+}
+
+class _NewTaskListScreenState extends State<NewTaskListScreen> {
+
+  late NewTaskCubit _newTaskBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _newTaskBloc = NewTaskCubit(sl());
+    _newTaskBloc.fetchAllData();
+  }
+
+//   @override
+//   void didChangeDependencies() {
+//     super.didChangeDependencies();
+// print("yes changed");
+//     // Ensure that you access the NewTaskCubit from the context rather than creating a new instance
+//     context.read<NewTaskCubit>().fetchAllData();
+//   }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const TMAppBar(),
-      body: BlocProvider(
-        create: (_) => NewTaskCubit(TaskRepository(sl()))..fetchAllData(),
-        child: BlocBuilder<NewTaskCubit, NewTaskState>(
-          builder: (context, state) {
-            if (state is NewTaskLoadingState) {
-              return const CenterCircularProgressIndicator();
-            } else if (state is NewTaskFailureState) {
-              return Center(child: Text(state.error));
-            } else if (state is NewTaskSuccessState) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildTaskCardStatus(state.taskCountData),
-                    _buildTaskListView(state.taskListData, context),
-                  ],
-                ),
-              );
-            }
-            return const SizedBox.shrink();
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) =>
+            _newTaskBloc
+          ),
+        ],
+        child: BlocListener<NewTaskCubit, NewTaskState>(
+          listener: (context, state) {
+            // if (state is NewTaskSuccessState) {
+            //   // Refresh data when task is successfully added or updated
+            //   context.read<NewTaskCubit>().fetchAllData();
+            // }
+
+            // TODO: implement listener
           },
+          child: BlocBuilder<NewTaskCubit, NewTaskState>(
+            builder: (context, state) {
+              if (state is NewTaskLoadingState) {
+                return const CenterCircularProgressIndicator();
+              } else if (state is NewTaskFailureState) {
+                return Center(child: Text(state.error));
+              } else if (state is NewTaskSuccessState) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildTaskCardStatus(state.taskCountData),
+                      _buildTaskListView(state.taskListData, context),
+                    ],
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          AppRouter.navigateTo(context, AddNewTaskListScreen.name);
+        onPressed: () async {
+          final result = await AppRouter.navigateTo(
+              context, AddNewTaskListScreen.name);
+          if (result == true) {
+            _newTaskBloc.fetchAllData();
+
+            // context.read<NewTaskCubit>().fetchAllData();
+          }
+          // AppRouter.navigateTo(context, AddNewTaskListScreen.name);
+
+          // AppRouter.navigateTo(context, AddNewTaskListScreen.name)..;
         },
         child: const Icon(Icons.add),
       ),
-
     );
   }
 
@@ -71,9 +112,9 @@ class NewTaskListScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final model = taskCountData.taskByStatusList![index];
             return TaskCardStatusWidget(
-                title: model.id ?? '',
-                count: model.sum.toString(), status:  getTaskStatusFromString(model.id),
-
+              title: model.id ?? '',
+              count: model.sum.toString(),
+              status: getTaskStatusFromString(model.id),
             );
           },
         ),
@@ -81,7 +122,8 @@ class NewTaskListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTaskListView(TaskListByStatusEntity taskListData, BuildContext context) {
+  Widget _buildTaskListView(TaskListByStatusEntity taskListData,
+      BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
       primary: false,

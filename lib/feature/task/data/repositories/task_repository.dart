@@ -14,6 +14,7 @@ class TaskRepository {
       );
 
   final String _taskBaseUrl = 'listTaskByStatus';
+  final String _addbaseUrl = 'createTask';
   final String _updateTaskBaseUrl = 'updateTaskStatus';
   final String _deleteTaskBaseUrl = 'deleteTask';
   final String _taskCountByStatusUrl = 'taskStatusCount';
@@ -92,7 +93,7 @@ class TaskRepository {
 
   Future<Either<Failure, bool>> addNewTask(
       String title,String description) async  {
-    String url = "$_deleteTaskBaseUrl/$id";
+    String url = _addbaseUrl;
 
 
     final response = await _networkExecutor.postRequest(

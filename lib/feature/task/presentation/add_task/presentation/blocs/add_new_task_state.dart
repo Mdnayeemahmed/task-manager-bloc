@@ -19,10 +19,19 @@ class AddNewTaskFailureState extends AddNewTaskState {
   @override
   List<Object> get props => [error];
 }
-
 class AddNewTaskSuccessState extends AddNewTaskState {
-  const AddNewTaskSuccessState();
+  const AddNewTaskSuccessState(this.taskListData,this.taskCountData);
+
+  final TaskListByStatusEntity taskListData;
+  final TaskCountByStatusEntity taskCountData;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [taskListData,taskCountData];
 }
+//
+// class AddNewTaskSuccessState extends AddNewTaskState {
+//   const AddNewTaskSuccessState();
+//
+//   @override
+//   List<Object> get props => [];
+// }

@@ -61,18 +61,31 @@ class AppRouter {
       extra: extra,
     );
   }
-
-  static void navigateTo(BuildContext context, String name,
-      {Map<String, String> pathParameters = const <String, String>{},
+  static Future<T?> navigateTo<T>(
+      BuildContext context,
+      String name, {
+        Map<String, String> pathParameters = const <String, String>{},
         Map<String, dynamic> queryParameters = const <String, dynamic>{},
-        Object? extra}) {
-    context.pushNamed(
+        Object? extra,
+      }) {
+    return context.pushNamed<T>(
       name,
       pathParameters: pathParameters,
       queryParameters: queryParameters,
       extra: extra,
     );
   }
+  // static void navigateTo(BuildContext context, String name,
+  //     {Map<String, String> pathParameters = const <String, String>{},
+  //       Map<String, dynamic> queryParameters = const <String, dynamic>{},
+  //       Object? extra}) {
+  //   context.pushNamed(
+  //     name,
+  //     pathParameters: pathParameters,
+  //     queryParameters: queryParameters,
+  //     extra: extra,
+  //   );
+  // }
 
   static void push(BuildContext context, String name, {Object? extra}) {
     context.push(name, extra: extra);

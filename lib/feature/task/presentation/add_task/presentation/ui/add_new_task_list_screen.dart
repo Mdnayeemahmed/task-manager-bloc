@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_ostad/app/app_router.dart';
 import 'package:task_manager_ostad/data/service/network_caller.dart';
 import 'package:task_manager_ostad/data/utills/urls.dart';
 import '../../../../../../app/service_locator.dart';
@@ -113,13 +114,27 @@ class _AddNewTaskListScreenState extends State<AddNewTaskListScreen> {
                       const SizedBox(
                         height: 24,
                       ),
-                      BlocBuilder<AddNewTaskCubit, AddNewTaskState>(
+                      BlocConsumer<AddNewTaskCubit, AddNewTaskState>(
+                        listener: (context, state) {
+                          if (state is AddNewTaskSuccessState) {
+                            // Pop the screen when the task is successfully added
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted) {  // Always check if the widget is still mounted before calling Navigator.pop
+                                // Navigator.pop(context);
+                                AppRouter.pop(context,result: true);
+                              }
+                            });
+                          } else if (state is AddNewTaskFailureState) {
+                            // Handle failure state and show an error message
+                            _showSnackBarMessage(context, state.error);
+                          }
+                        },
                         builder: (context, state) {
                           bool isLoading = state is AddNewTaskLoadingState;
+
                           return Visibility(
                             visible: !isLoading,
-                            replacement:
-                            const CenterCircularProgressIndicator(),
+                            replacement: const CenterCircularProgressIndicator(),
                             child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
@@ -129,8 +144,7 @@ class _AddNewTaskListScreenState extends State<AddNewTaskListScreen> {
                                   );
                                 }
                               },
-                              child: const Icon(
-                                  Icons.arrow_circle_right_outlined),
+                              child: const Icon(Icons.arrow_circle_right_outlined),
                             ),
                           );
                         },
