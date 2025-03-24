@@ -150,7 +150,7 @@ class AuthRepository {
 
     final responseBody = response.body as Map<String, dynamic>;
     if (responseBody['status'] == 'success') {
-      getProfileInfomation();
+      await getProfileInfomation();
       // Optionally, update the local user data if necessary
       // For example, re-save the user info locally if it is returned
       return const Right(true);
