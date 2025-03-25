@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:task_manager_ostad/data/models/user_model.dart';
 import 'package:task_manager_ostad/feature/auth/data/models/user_model.dart';
 
 import '../../../../core/domain/data/model/api_failure.dart';

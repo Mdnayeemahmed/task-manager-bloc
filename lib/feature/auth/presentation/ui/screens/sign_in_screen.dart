@@ -2,10 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:task_manager_ostad/app/extensions/localization.dart';
-import 'package:task_manager_ostad/data/models/user_model.dart';
-import 'package:task_manager_ostad/data/service/network_caller.dart';
-import 'package:task_manager_ostad/data/utills/urls.dart';
+
 import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/sign_up_screen.dart';
 import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/forget_password_verify_email_screen.dart';
 import 'package:task_manager_ostad/feature/dashboard/presentation/ui/main_bottom_nav_screen.dart';
@@ -103,14 +100,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(
                         height: 16,
                       ),
-                      // Visibility(
-                      //   visible: _signInProgress == false,
-                      //   replacement: const CenterCircularProgressIndicator(),
-                      //   child: ElevatedButton(
-                      //     onPressed: _onTabSignInButton,
-                      //     child: const Icon(Icons.arrow_circle_right_outlined),
-                      //   ),
-                      // ),
+
 
                       _buildLoginButton(),
                       const SizedBox(

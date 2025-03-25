@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../data/models/task_list_model.dart';
 import '../../../task/domain/entities/task_entity.dart';
 
 class TaskItems extends StatelessWidget {

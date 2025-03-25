@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager_ostad/data/service/network_caller.dart';
-import 'package:task_manager_ostad/data/utills/urls.dart';
+
 import '../../../../../app/app_router.dart';
 import '../../../../../app/service_locator.dart';
 import '../../../../../app/styling/app_colors.dart';

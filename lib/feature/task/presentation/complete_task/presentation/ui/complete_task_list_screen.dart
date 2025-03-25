@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:task_manager_ostad/data/models/task_count_by_status_model.dart';
-import 'package:task_manager_ostad/data/models/task_count_model.dart';
-import 'package:task_manager_ostad/data/models/task_list_by_status_model.dart';
-import 'package:task_manager_ostad/data/service/network_caller.dart';
-import 'package:task_manager_ostad/data/utills/urls.dart';
 
 import '../../../../../../app/service_locator.dart';
 import '../../../../../common/presentation/widgets/center_circular_progress_indicator.dart';

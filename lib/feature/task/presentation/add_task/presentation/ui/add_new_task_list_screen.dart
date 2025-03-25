@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager_ostad/app/app_router.dart';
-import 'package:task_manager_ostad/data/service/network_caller.dart';
-import 'package:task_manager_ostad/data/utills/urls.dart';
+
 import '../../../../../../app/service_locator.dart';
 import '../../../../../common/presentation/widgets/center_circular_progress_indicator.dart';
 import '../../../../../common/presentation/widgets/screen_background.dart';
