@@ -22,7 +22,7 @@ class CancelTaskListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const TMAppBar(),
+      // appBar: const TMAppBar(),
       body: BlocProvider(
         create: (_) => CancelTaskCubit(TaskRepository(sl()))..fetchAllData(),
         child: BlocBuilder<CancelTaskCubit, CancelTaskState>(
@@ -70,6 +70,16 @@ class CancelTaskListScreen extends StatelessWidget {
   }
 
   Widget _buildTaskListView(TaskListByStatusEntity taskListData, BuildContext context) {
+
+    if (taskListData.taskList.isEmpty) {
+      return const Center(
+        child: Text(
+          'No task found',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      );
+    }
+
     return ListView.builder(
       shrinkWrap: true,
       primary: false,

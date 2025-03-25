@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager_ostad/data/service/network_caller.dart';
 import 'package:task_manager_ostad/data/utills/urls.dart';
+import '../../../../../app/app_router.dart';
 import '../../../../../app/service_locator.dart';
 import '../../../../../app/styling/app_colors.dart';
 import '../../../../common/presentation/widgets/center_circular_progress_indicator.dart';
@@ -24,20 +25,30 @@ class ForgetPasswordVerifyEmailScreen extends StatefulWidget {
 class _ForgetPasswordVerifyEmailScreenState extends State<ForgetPasswordVerifyEmailScreen> {
   final TextEditingController _emailTEController=TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  late ForgotPasswordCubit _forgotPassBloc;
+  @override
+  void initState() {
+    super.initState();
+    _forgotPassBloc = ForgotPasswordCubit(sl());
+  }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return BlocProvider(
-      create: (context) => ForgotPasswordCubit(sl()), // Provide the cubit
-      child: Scaffold(
+    return MultiBlocProvider(
+  providers: [
+    BlocProvider(
+      create: (context) => _forgotPassBloc, // Provide the cubit
+),
+  ],
+  child: Scaffold(
         body: ScreenBackground(
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(32),
               child: Form(
+                key:_formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -80,14 +91,26 @@ class _ForgetPasswordVerifyEmailScreenState extends State<ForgetPasswordVerifyEm
                           showSnackBarMessage(context, state.error);
                         }
                         if (state is ForgotPasswordVerifyEmailSuccessState) {
-                          Navigator.push(
+                          AppRouter.replace(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => ForgetPasswordVerifyOtpScreen(
-                                email: _emailTEController.text,
-                              ),
-                            ),
+                            ForgetPasswordVerifyOtpScreen.name,
+                            extra:_emailTEController.text
+
                           );
+
+
+                          // AppRouter.replace(context, ForgetPasswordVerifyOtpScreen.name);
+                          //
+                          // AppRoutes.
+                          //
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => ForgetPasswordVerifyOtpScreen(
+                          //       email: _emailTEController.text,
+                          //     ),
+                          //   ),
+                          // );
                         }
                       },
                       builder: (context, state) {
@@ -119,7 +142,7 @@ class _ForgetPasswordVerifyEmailScreenState extends State<ForgetPasswordVerifyEm
           ),
         ),
       ),
-    );
+);
   }
 
   Widget _buildSignUp(BuildContext context) {

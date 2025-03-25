@@ -60,7 +60,7 @@ class _AddNewTaskListScreenState extends State<AddNewTaskListScreen> {
           }
         },
         child: Scaffold(
-          appBar: const TMAppBar(),
+          // appBar: const TMAppBar(),
           body: ScreenBackground(
             child: SingleChildScrollView(
               child: Padding(

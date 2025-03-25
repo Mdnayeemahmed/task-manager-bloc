@@ -15,10 +15,11 @@ class AuthRepository {
   );
 
   final String _loginUrl = 'login';
+  final String _signUpUrl = 'Registration';
   final String _getProfileInformation = 'ProfileDetails';
   final String _forgotPasswordUrl = 'RecoverVerifyEmail';
   final String _verifyOtpUrl = 'RecoverVerifyOTP';
-  final String _resetPassword = 'RecoverResetPass';
+  final String _resetPassword = 'RecoverResetPassword';
   final String _updateProfileUrl = 'ProfileUpdate';
 
   final NetworkExecutor _networkExecutor;
@@ -66,7 +67,7 @@ class AuthRepository {
 
   Future<Either<Failure, bool>> signUp(String userEmail, String firstName,
       String lastName, String mobile, String password) async {
-    String url = "$_forgotPasswordUrl/$userEmail";
+    String url = _signUpUrl;
 
     final response = await _networkExecutor.postRequest(
       path: url,

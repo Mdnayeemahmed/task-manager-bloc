@@ -11,16 +11,15 @@ import '../../../../../app/service_locator.dart';
 import '../../../../../app/styling/app_colors.dart';
 import '../../../../common/presentation/widgets/center_circular_progress_indicator.dart';
 
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../common/presentation/widgets/snack_bar_message.dart';
 import '../../blocs/otp_verify_cubit.dart';
 
 class ForgetPasswordVerifyOtpScreen extends StatefulWidget {
-  const ForgetPasswordVerifyOtpScreen({super.key, this.email, this.otp});
-  final String? email;
-  final String? otp;
+  const ForgetPasswordVerifyOtpScreen({super.key, required this.email});
+
+  final String email;
   static const String name = '/forget-password-verify-otp';
 
   @override
@@ -32,31 +31,35 @@ class _ForgetPasswordVerifyOtpScreenState
     extends State<ForgetPasswordVerifyOtpScreen> {
   final TextEditingController _otpTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _otpVerifyInProgress = false;
+
+  // bool _otpVerifyInProgress = false;
+  late OtpVerifyCubit _otpVerifyBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _otpVerifyBloc = OtpVerifyCubit(sl());
+  }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      body: BlocProvider(
-        create: (context) => OtpVerifyCubit(sl()), // Provide the cubit
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => _otpVerifyBloc, // Provide the cubit
+          ),
+        ],
         child: BlocListener<OtpVerifyCubit, OtpVerifyState>(
           listener: (context, state) {
             if (state is OtpVerifyLoadingState) {
-              setState(() {
-                _otpVerifyInProgress = true;
-              });
-            } else {
-              setState(() {
-                _otpVerifyInProgress = false;
-              });
+              const CenterCircularProgressIndicator();
             }
 
             if (state is OtpVerifySuccessState) {
-              AppRouter.push(
-                  context,
-                  ResetPasswordScreen.name,
-                  extra: [widget.email, _otpTEController.text]
+              AppRouter.replace(context, ResetPasswordScreen.name,
+                  extra:[widget.email,_otpTEController.text]
               );
               showSnackBarMessage(context, 'OTP Verified Successfully');
             } else if (state is OtpVerifyFailureState) {
@@ -92,15 +95,25 @@ class _ForgetPasswordVerifyOtpScreenState
                     const SizedBox(
                       height: 16,
                     ),
-                    Visibility(
-                      visible: !_otpVerifyInProgress,
-                      replacement: const CenterCircularProgressIndicator(),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _onTapOtpVerifyButton(context); // Pass context for cubit
-                        },
-                        child: const Text('Verify'),
-                      ),
+                    BlocConsumer<OtpVerifyCubit, OtpVerifyState>(
+                      listener: (context, state) {
+                        if (state is OtpVerifyFailureState) {
+                          showSnackBarMessage(context, state.error);
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is OtpVerifyLoadingState) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        return ElevatedButton(
+                          onPressed: () {
+                            _onTapOtpVerifyButton(context);
+                          },
+                          child: const Text('Verify'),
+                        );
+                      },
                     ),
                     const SizedBox(
                       height: 48,
@@ -166,7 +179,7 @@ class _ForgetPasswordVerifyOtpScreenState
                   color: themeColor, fontStyle: FontStyle.italic),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                AppRouter.go(context, SignInScreen.name);
+                  AppRouter.go(context, SignInScreen.name);
                 },
             ),
           ]),
@@ -179,4 +192,3 @@ class _ForgetPasswordVerifyOtpScreenState
     _otpTEController.dispose();
   }
 }
-

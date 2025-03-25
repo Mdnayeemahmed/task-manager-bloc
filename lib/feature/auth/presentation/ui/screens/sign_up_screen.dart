@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager_ostad/data/service/network_caller.dart';
 import 'package:task_manager_ostad/data/utills/urls.dart';
+import '../../../../../app/app_router.dart';
 import '../../../../../app/service_locator.dart';
 import '../../../../../app/styling/app_colors.dart';
 import '../../../../common/presentation/widgets/center_circular_progress_indicator.dart';
@@ -25,14 +26,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  late SignUpCubit _signUpBloc;
+  @override
+  void initState() {
+    super.initState();
+    _signUpBloc = SignUpCubit(sl());
+  }
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return BlocProvider(
-      create: (context) => SignUpCubit(sl()),
-      child: Scaffold(
+    return MultiBlocProvider(
+  providers: [
+    BlocProvider(
+      create: (context) => _signUpBloc,
+),
+  ],
+  child: Scaffold(
         body: ScreenBackground(
           child: SingleChildScrollView(
             child: Padding(
@@ -140,6 +150,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                         if (state is SignUpSuccessState) {
                           showSnackBarMessage(context, "Sign-up successful!");
+                          AppRouter.pop(context);
+
                         }
                       },
                       builder: (context, state) {
@@ -147,7 +159,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           visible: !(state is SignUpLoadingState),
                           replacement: const CenterCircularProgressIndicator(),
                           child: ElevatedButton(
-                            onPressed: _onTapSignUpButton,
+                            onPressed: (){
+
+                              _onTapSignUpButton(context);
+                            },
+
                             child: const Icon(Icons.arrow_circle_right_outlined),
                           ),
                         );
@@ -166,16 +182,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ),
-    );
+);
   }
 
-  void _onTapSignUpButton() {
+  void _onTapSignUpButton(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      _signUpUser();
+      _signUpUser(context);
     }
   }
 
-  Future<void> _signUpUser() async {
+  Future<void> _signUpUser(BuildContext context) async {
     context.read<SignUpCubit>().userSignUp(
       userEmail: _emailTEController.text.trim(),
       firstName: _firstNameTEController.text.trim(),

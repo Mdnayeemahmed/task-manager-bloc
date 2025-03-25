@@ -41,7 +41,7 @@ class _CompleteTaskListScreenState extends State<CompleteTaskListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const TMAppBar(),
+      // appBar: const TMAppBar(),
       body: MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -94,6 +94,17 @@ class _CompleteTaskListScreenState extends State<CompleteTaskListScreen> {
 
   Widget _buildTaskListView(TaskListByStatusEntity taskListData,
       BuildContext context) {
+
+    if (taskListData.taskList.isEmpty) {
+      return const Center(
+        child: Text(
+          'No task found',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      );
+    }
+
+
     return ListView.builder(
       shrinkWrap: true,
       primary: false,

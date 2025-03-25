@@ -249,7 +249,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   _onLogInSuccess(LogInInSuccessState state) {
     showSnackMessage(message: "Success", context: context);
-    AppRouter.push(context, MainBottomNavScreen.name);
+    AppRouter.replace(context, MainBottomNavScreen.name);
     _passwordTEController.clear();
     _emailTEController.clear();
   }

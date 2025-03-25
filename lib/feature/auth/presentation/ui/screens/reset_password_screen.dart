@@ -11,10 +11,10 @@ import '../../../../common/presentation/widgets/snack_bar_message.dart';
 import '../../blocs/reset_password_cubit.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key, this.email, this.otp});
+  const ResetPasswordScreen( this.email, this.otp, {super.key});
   static const String name = '/reset-password';
-  final String? email;
-  final String? otp;
+  final String email;
+  final String otp;
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -26,14 +26,23 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController _confirmPasswordTEController =
   TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  late ResetPasswordCubit _resetPasswordBloc;
+  @override
+  void initState() {
+    super.initState();
+    _resetPasswordBloc = ResetPasswordCubit(sl());
+  }
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return BlocProvider(
-      create: (_) => ResetPasswordCubit(sl()), // Initialize the Cubit
-      child: Scaffold(
+    return MultiBlocProvider(
+  providers: [
+    BlocProvider(
+      create: (_) => _resetPasswordBloc, // Initialize the Cubit
+),
+  ],
+  child: Scaffold(
         body: ScreenBackground(
           child: SingleChildScrollView(
             child: Padding(
@@ -94,7 +103,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       listener: (context, state) {
                         if (state is ResetPasswordInSuccessState) {
                           showSnackBarMessage(context, 'Password change successful');
-                          AppRouter.go(context, SignInScreen.name);
+                          AppRouter.push(context, SignInScreen.name);
                         } else if (state is ResetPasswordFailureState) {
                           showSnackBarMessage(context, state.error);
                         }
@@ -124,7 +133,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           ),
         ),
       ),
-    );
+);
   }
 
   void _onTapResetButton(BuildContext context) {
