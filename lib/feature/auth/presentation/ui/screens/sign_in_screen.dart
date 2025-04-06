@@ -7,7 +7,6 @@ import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/sign_up_
 import 'package:task_manager_ostad/feature/auth/presentation/ui/screens/forget_password_verify_email_screen.dart';
 import 'package:task_manager_ostad/feature/dashboard/presentation/ui/main_bottom_nav_screen.dart';
 
-
 import '../../../../../app/app_router.dart';
 import '../../../../../app/service_locator.dart';
 import '../../../../../app/styling/app_colors.dart';
